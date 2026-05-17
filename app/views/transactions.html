@@ -1,0 +1,243 @@
+{% extends "dashboard_base.html" %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/transactions.css') }}">
+{% endblock %}
+
+{% block dashboard_content %}
+
+<div class="transactions-page">
+
+    <div class="transaction-top">
+
+    <!-- Left : cards -->
+    <div class="cards-section">
+
+        <div class="section-title">
+            <h2>My Cards</h2>
+            <span>+ Add Card</span>
+        </div>
+
+        <div class="cards-wrapper">
+
+            <!-- Card 1 -->
+            <div class="bank-card active-card">
+
+                <div class="card-chip">
+                    <i class="bi bi-credit-card-2-front"></i>
+                </div>
+
+                <p>Balance</p>
+                <h3>$5,756</h3>
+
+                <div class="card-info">
+
+                    <div>
+                        <span>CARD HOLDER</span>
+                        <strong>Eddy Cusuma</strong>
+                    </div>
+
+                    <div>
+                        <span>VALID THRU</span>
+                        <strong>12/22</strong>
+                    </div>
+
+                </div>
+
+                <div class="card-number">
+                    3778 **** **** 1234
+                </div>
+
+            </div>
+
+
+            <!-- Card 2 -->
+
+            <div class="bank-card light-card">
+
+                <div class="card-chip">
+                    <i class="bi bi-credit-card-2-front"></i>
+                </div>
+
+                <p>Balance</p>
+                <h3>$5,756</h3>
+
+                <div class="card-info">
+
+                    <div>
+                        <span>CARD HOLDER</span>
+                        <strong>Eddy Cusuma</strong>
+                    </div>
+
+                    <div>
+                        <span>VALID THRU</span>
+                        <strong>12/22</strong>
+                    </div>
+
+                </div>
+
+                <div class="card-number">
+                    3778 **** **** 1234
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- Right expense -->
+
+    <div class="expense-container">
+
+        <div class="expense-header">
+
+            <h2>My Expense</h2>
+
+            <button class="export-btn">
+
+                <i class="bi bi-upload"></i>
+                Export
+
+            </button>
+
+        </div>
+
+
+        <div class="expense-card">
+
+            <div class="bar-chart">
+
+                <div class="bar small"></div>
+
+                <div class="bar tall"></div>
+
+                <div class="bar medium"></div>
+
+                <div class="bar short"></div>
+
+                <div class="bar active">
+                    <span>$12,500</span>
+                </div>
+
+                <div class="bar medium"></div>
+
+            </div>
+
+            <div class="months">
+
+                <span>Aug</span>
+                <span>Sep</span>
+                <span>Oct</span>
+                <span>Nov</span>
+                <span>Dec</span>
+                <span>Jan</span>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+    <div class="recent-header">
+        <h2>Recent Transactions</h2>
+    </div>
+
+    <div class="recent-actions">
+        <div class="tabs">
+            <span class="active">All Transactions</span>
+            <span>Income</span>
+            <span>Expense</span>
+        </div>
+
+        <div class="right-actions">
+            <button class="date-filter"><i class="bi bi-calendar"></i> May 01 - May 15</button>
+            <button class="add-btn"><i class="bi bi-plus-lg"></i> Add Transaction</button>
+        </div>
+    </div>
+
+    <div class="transactions-table-card">
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Description</th>
+                    <th>Transaction ID</th>
+                    <th>Type</th>
+                    <th>Card</th>
+                    <th>Date</th>
+                    <th>Amount</th>
+                    <th>Receipt</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                <tr>
+                    <td><span class="circle up"><i class="bi bi-arrow-up"></i></span> Spotify Subscription</td>
+                    <td>#12548796</td>
+                    <td>Shopping</td>
+                    <td>1234 ****</td>
+                    <td>28 Jan, 12.30 AM</td>
+                    <td class="negative">-$2,500</td>
+                    <td><button class="download-btn">Download</button></td>
+                </tr>
+
+                <tr>
+                    <td><span class="circle down"><i class="bi bi-arrow-down"></i></span> Freepik Sales</td>
+                    <td>#12548796</td>
+                    <td>Transfer</td>
+                    <td>1234 ****</td>
+                    <td>25 Jan, 10.40 PM</td>
+                    <td class="positive">+$750</td>
+                    <td><button class="download-btn">Download</button></td>
+                </tr>
+
+                <tr>
+                    <td><span class="circle up"><i class="bi bi-arrow-up"></i></span> Mobile Service</td>
+                    <td>#12548796</td>
+                    <td>Service</td>
+                    <td>1234 ****</td>
+                    <td>20 Jan, 10.40 PM</td>
+                    <td class="negative">-$150</td>
+                    <td><button class="download-btn">Download</button></td>
+                </tr>
+
+                <tr>
+                    <td><span class="circle up"><i class="bi bi-arrow-up"></i></span> Wilson</td>
+                    <td>#12548796</td>
+                    <td>Transfer</td>
+                    <td>1234 ****</td>
+                    <td>15 Jan, 03.29 PM</td>
+                    <td class="negative">-$1050</td>
+                    <td><button class="download-btn">Download</button></td>
+                </tr>
+
+                <tr>
+                    <td><span class="circle down"><i class="bi bi-arrow-down"></i></span> Emilly</td>
+                    <td>#12548796</td>
+                    <td>Transfer</td>
+                    <td>1234 ****</td>
+                    <td>14 Jan, 10.40 PM</td>
+                    <td class="positive">+$840</td>
+                    <td><button class="download-btn">Download</button></td>
+                </tr>
+            </tbody>
+        </table>
+
+    </div>
+
+    <div class="pagination">
+        <span>‹ Previous</span>
+        <span class="page active">1</span>
+        <span class="page">2</span>
+        <span class="page">3</span>
+        <span class="page">4</span>
+        <span>Next ›</span>
+    </div>
+
+</div>
+
+{% endblock %}
