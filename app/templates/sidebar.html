@@ -1,23 +1,56 @@
-<div class="container">
+<div class="sidebar">
 
-    <aside class="sidebar">
+    <ul class="sidebar-menu">
 
+        <li class="active">
+            <a href="{{ url_for('dashboard.index') }}">
+                <i class="bi bi-house-fill"></i>
+                <span>Dashboard</span>
+            </a>
+        </li>
 
-        <div class="logo">
+        <li>
+            <a href="{{ url_for('transactions.index') }}">
+                <i class="bi bi-cash-stack"></i>
+                <span>Transactions</span>
+            </a>
+        </li>
 
-            PLUMA
-            
-        </div>
+        <li>
+            <a href="{{ url_for('budgets.index') }}">
+                <i class="bi bi-wallet2"></i>
+                <span>Budgets</span>
+            </a>
+        </li>
 
-        <ul class="menu">
-            <li><a href="#">Dashboard</a></li>
-            <li><a href="#">Transactions</a></li>
-            <li><a href="#">Budgets</a></li>
-            <li><a href="#">Goals</a></li>
-            <li><a href="#">Settings</a></li>
-            <li><a href="#">Account</a></li>
-            <li><a href="#">Log out</a></li>
-        </ul>
+        <li>
+            <a href="{{ url_for('goals.index') }}">
+                <i class="bi bi-bullseye"></i>
+                <span>Goals</span>
+            </a>
+        </li>
 
+        <li>
+            <a href="{{ url_for('settings.index') }}">
+                <i class="bi bi-gear-fill"></i>
+                <span>Settings</span>
+            </a>
+        </li>
 
-    </aside>
+        <li>
+            <a href="{{ url_for('users.index') }}">
+                <i class="bi bi-people-fill"></i>
+                <span>Accounts</span>
+            </a>
+        </li>
+
+    </ul>
+
+    <div class="logout">
+        <a href="{{ url_for('auth.logout') }}">
+            <i class="bi bi-box-arrow-right"></i>
+            <span>Log Out</span>
+        </a>
+    </div>
+
+</div>
