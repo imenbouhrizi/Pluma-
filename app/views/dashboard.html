@@ -1,0 +1,347 @@
+{% extends "dashboard_base.html" %}
+
+{% block dashboard_content %}
+
+<div class="dashboard-page-content">
+
+    <div class="overview-header">
+
+        <div>
+
+            <h1>Overview</h1>
+
+            <p>Welcome Jhon! Here's your financial summary</p>
+
+        </div>
+
+        <div class="overview-actions">
+
+            <button class="export-btn">
+
+                <i class="bi bi-upload"></i>
+
+                Export
+
+            </button>
+
+            <button class="date-btn">
+
+                <i class="bi bi-calendar"></i>
+
+                May 01 - May 15
+
+            </button>
+
+        </div>
+
+    </div>
+
+
+    <!-- KPI cards -->
+
+    <div class="cards-container">
+
+        <div class="card-item">
+
+            <div class="card-icon balance">
+                <i class="bi bi-coin"></i>
+            </div>
+
+            <div>
+
+                <span>My Balance</span>
+
+                <h3>$12,750</h3>
+
+            </div>
+
+        </div>
+
+
+        <div class="card-item">
+
+            <div class="card-icon income">
+                <i class="bi bi-cash-stack"></i>
+            </div>
+
+            <div>
+
+                <span>Income</span>
+
+                <h3>$5,600</h3>
+
+            </div>
+
+        </div>
+
+
+        <div class="card-item">
+
+            <div class="card-icon expense">
+                <i class="bi bi-wallet2"></i>
+            </div>
+
+            <div>
+
+                <span>Expense</span>
+
+                <h3>$3,460</h3>
+
+            </div>
+
+        </div>
+
+
+        <div class="card-item">
+
+            <div class="card-icon saving">
+                <i class="bi bi-piggy-bank"></i>
+            </div>
+
+            <div>
+
+                <span>Total Saving</span>
+
+                <h3>$7,920</h3>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <div class="charts-section">
+
+    <!-- Expense Statistics -->
+    <div class="expense-box">
+
+        <h3>Expense Statistics</h3>
+
+        <div class="pie-card">
+            <canvas id="expensePieChart"></canvas>
+        </div>
+
+    </div>
+
+    <!-- Financial Overview -->
+    <div class="financial-card">
+
+        <div class="chart-header">
+
+            <h3>Financial Overview</h3>
+
+            <div class="chart-actions">
+                <span class="legend income-line"></span>
+                <span>Income</span>
+
+                <span class="legend expense-line"></span>
+                <span>Expenses</span>
+
+                <button class="monthly-btn">
+                    Monthly View
+                    <i class="bi bi-chevron-down"></i>
+                </button>
+            </div>
+
+        </div>
+
+        <canvas id="financialChart"></canvas>
+
+    </div>
+
+</div>
+
+<div class="bottom-section">
+
+<!-- Transactions Dashboard Mini -->
+<div class="transactions-card">
+
+    <div class="transactions-header">
+        <h3>Transactions</h3>
+
+        <button class="month-filter">
+            <i class="bi bi-calendar"></i>
+            May
+            <i class="bi bi-chevron-down"></i>
+        </button>
+    </div>
+
+    <div class="transactions-tabs">
+        <span class="active-tab">All</span>
+        <span>Upcoming</span>
+    </div>
+
+    <div class="transactions-list">
+
+        <div class="transaction-row">
+            <div class="transaction-left">
+                <div class="transaction-icon food-icon">
+                    <i class="bi bi-cup-hot-fill"></i>
+                </div>
+
+                <div>
+                    <h4>Dunkin Donuts</h4>
+                    <p>May 23, 2022 at 8:20 PM</p>
+                </div>
+            </div>
+
+            <span class="category food-category">Food</span>
+            <span class="amount negative">-$19.00</span>
+        </div>
+
+        <div class="transaction-row">
+            <div class="transaction-left">
+                <div class="transaction-icon transport-icon">
+                    <i class="bi bi-car-front-fill"></i>
+                </div>
+
+                <div>
+                    <h4>Uber</h4>
+                    <p>May 23, 2022 at 10:36 AM</p>
+                </div>
+            </div>
+
+            <span class="category transport-category">Transport</span>
+            <span class="amount negative">-$7.00</span>
+        </div>
+
+        <div class="transaction-row">
+            <div class="transaction-left">
+                <div class="transaction-icon service-icon">
+                    <i class="bi bi-cash-stack"></i>
+                </div>
+
+                <div>
+                    <h4>Payment Salary</h4>
+                    <p>May 23, 2022 at 9:48 AM</p>
+                </div>
+            </div>
+
+            <span class="category service-category">Service</span>
+            <span class="amount positive">+$15,000</span>
+        </div>
+
+        <div class="transaction-row">
+            <div class="transaction-left">
+                <div class="transaction-icon transfer-icon">
+                    <i class="bi bi-arrow-left-right"></i>
+                </div>
+
+                <div>
+                    <h4>Elon Musk</h4>
+                    <p>May 22, 2022 at 4:46 PM</p>
+                </div>
+            </div>
+
+            <span class="category transfer-category">Transfer</span>
+            <span class="amount positive">+$3,000</span>
+        </div>
+
+        <div class="transaction-row">
+            <div class="transaction-left">
+                <div class="transaction-icon shop-icon">
+                    <i class="bi bi-bag-fill"></i>
+                </div>
+
+                <div>
+                    <h4>Apple</h4>
+                    <p>May 23, 2022 at 4:44 PM</p>
+                </div>
+            </div>
+
+            <span class="category shop-category">Shop</span>
+            <span class="amount negative">-$499.00</span>
+        </div>
+
+    </div>
+
+</div>
+
+
+    <!-- Financial Goals -->
+    <div class="financial-goals-card">
+
+        <div class="goals-header">
+            <h3>Financial goals</h3>
+
+            <button>
+                <i class="bi bi-chevron-right"></i>
+            </button>
+        </div>
+
+        <div class="goal-row">
+
+            <div class="goal-circle circle-yellow">
+                <span>30%</span>
+            </div>
+
+            <div class="goal-main">
+                <h4>Buy Iphone 15</h4>
+                <p>Deadline: May 8, 2024</p>
+            </div>
+
+            <div class="goal-money">
+                <span>Saved up</span>
+                <h4>$360</h4>
+            </div>
+
+            <div class="goal-money">
+                <span>Goal</span>
+                <h4>$1,200</h4>
+            </div>
+
+        </div>
+
+        <div class="goal-row">
+
+            <div class="goal-circle circle-purple">
+                <span>90%</span>
+            </div>
+
+            <div class="goal-main">
+                <h4>Trip to Spain</h4>
+                <p>Deadline: August 16, 2024</p>
+            </div>
+
+            <div class="goal-money">
+                <span>Saved up</span>
+                <h4>$3,260</h4>
+            </div>
+
+            <div class="goal-money">
+                <span>Goal</span>
+                <h4>$3,600</h4>
+            </div>
+
+        </div>
+
+        <div class="goal-row">
+
+            <div class="goal-circle circle-orange">
+                <span>77%</span>
+            </div>
+
+            <div class="goal-main">
+                <h4>For a new house</h4>
+                <p>Deadline: May 12, 2025</p>
+            </div>
+
+            <div class="goal-money">
+                <span>Saved up</span>
+                <h4>$120,300</h4>
+            </div>
+
+            <div class="goal-money">
+                <span>Goal</span>
+                <h4>$180,000</h4>
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+</div>
+
+{% endblock %}
