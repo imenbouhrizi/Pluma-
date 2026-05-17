@@ -1,0 +1,95 @@
+{% extends "auth_base.html" %}
+
+{% block content %}
+
+<div class="figma-label">Signup</div>
+
+<div class="auth-container">
+
+    <div class="auth-left">
+        <div class="brand">
+            <img src="{{ url_for('static', filename='images/logo.png') }}" alt="logo">
+            <span>pluma</span>
+
+        </div>
+
+        <img class="auth-illustration signup-img"
+        src="{{ url_for('static', filename='images/signup.png') }}"
+        alt="signup">
+
+        <div class="welcome-text">
+            <h2>Welcome to Pluma</h2>
+            <p>Experience Effortless Financial Tracking</p>
+        </div>
+    </div>
+
+    <div class="auth-right signup-panel">
+        <h1>Welcome</h1>
+        <p class="subtitle">Start Managing Your Finance Faster and better</p>
+
+        <form method="POST" action="{{ url_for('auth.signup') }}">
+
+            <label>Type Email Here</label>
+            <div class="input-box">
+                <span><i class="bi bi-envelope"></i></span>
+                <input type="email" name="email" placeholder="example@email.com" required>
+            </div>
+
+            <label>Type Password Here</label>
+            <div class="input-box">
+                <span><i class="bi bi-lock"></i></span>
+                <input type="password" id="signupPassword" name="password" placeholder="at least 8 characters" required>
+            </div>
+            
+            <div class="password-rules">
+                <span id="ruleLength">
+                    <i class="bi bi-check-circle-fill"></i>
+                    Minimum 8 Character
+                </span>
+
+                <span id="ruleUppercase">
+                    <i class="bi bi-check-circle-fill"></i>
+                    1 Upper Alphabet
+                </span>
+
+                <span id="ruleNumber">
+                    <i class="bi bi-check-circle-fill"></i>
+                    Minimum 1 Number
+                </span>
+            </div>
+
+            <label>Retype-Password Here</label>
+            <div class="input-box">
+                <span><i class="bi bi-lock"></i></span>
+                <input type="password" name="confirm_password" placeholder="at least 8 characters" required>
+            </div>
+
+            <button type="submit" class="auth-btn">Signup</button>
+
+            <div class="divider">
+                <span></span>
+                <p>or</p>
+                <span></span>
+            </div>
+
+            <a href="{{ url_for('auth.google_login') }}" class="social-btn">
+                <img src="{{ url_for('static', filename='icons/google.png') }}">
+                Sign in with Google
+            </a>
+
+            <a href="{{ url_for('auth.facebook_login') }}" class="social-btn">
+                <img src="{{ url_for('static', filename='icons/facebook.png') }}" alt="Facebook">
+                Sign in with Facebook
+            </a>
+
+            <p class="bottom-link">
+                Already financing?
+                <a href="{{ url_for('auth.login') }}">Login Here</a>
+            </p>
+
+        </form>
+    </div>
+
+</div>
+
+{% endblock %}

@@ -1,0 +1,76 @@
+{% extends "auth_base.html" %}
+
+{% block content %}
+
+<div class="figma-label">Login</div>
+
+<div class="auth-container">
+
+    <div class="auth-left">
+        <div class="brand">
+            <img src="{{ url_for('static', filename='images/logo.png') }}" alt="logo">
+            <span>pluma</span>
+
+        </div>
+
+        <img class="auth-illustration login-img"
+        src="{{ url_for('static', filename='images/login.png') }}"
+        alt="login">
+
+        <div class="welcome-text">
+            <h2>Welcome to Pluma</h2>
+            <p>Experience Effortless Financial Tracking</p>
+        </div>
+    </div>
+
+    <div class="auth-right">
+        <h1>Welcome</h1>
+        <p class="subtitle">Start Managing Your Finance Faster and better</p>
+
+        <form method="POST" action="{{ url_for('auth.login') }}">
+
+            <label>Email Here</label>
+            <div class="input-box">
+                <span><i class="bi bi-envelope"></i></span>
+                <input type="email" name="email" placeholder="example@email.com" required>
+            </div>
+
+            <label>Password Here</label>
+            <div class="input-box">
+                <span><i class="bi bi-lock"></i></span>
+                <input type="password" name="password" placeholder="at least 8 characters" required>
+            </div>
+
+            <div class="forgot">
+                <a href="#">Forget password?</a>
+            </div>
+
+            <button type="submit" class="auth-btn">Login</button>
+
+            <div class="divider">
+                <span></span>
+                <p>or</p>
+                <span></span>
+            </div>
+
+                <a href="{{ url_for('auth.google_login') }}" class="social-btn">
+                    <img src="{{ url_for('static', filename='icons/google.png') }}">
+                    Sign in with Google
+                </a>
+
+                <a href="{{ url_for('auth.facebook_login') }}" class="social-btn">
+                    <img src="{{ url_for('static', filename='icons/facebook.png') }}" alt="Facebook">
+                    Sign in with Facebook
+                </a>
+
+            <p class="bottom-link">
+                New to financing?
+                <a href="{{ url_for('auth.signup') }}">Get Started</a>
+            </p>
+
+        </form>
+    </div>
+
+</div>
+
+{% endblock %}
