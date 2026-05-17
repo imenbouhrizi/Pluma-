@@ -10,12 +10,11 @@
         <div class="brand">
             <img src="{{ url_for('static', filename='images/logo.png') }}" alt="logo">
             <span>pluma</span>
-
         </div>
 
         <img class="auth-illustration signup-img"
-        src="{{ url_for('static', filename='images/signup.png') }}"
-        alt="signup">
+             src="{{ url_for('static', filename='images/signup.png') }}"
+             alt="signup">
 
         <div class="welcome-text">
             <h2>Welcome to Pluma</h2>
@@ -72,14 +71,15 @@
                 <span></span>
             </div>
 
-            <a href="{{ url_for('auth.google_login') }}" class="social-btn">
+            <!-- ✅ Correction : utiliser google.login et facebook.login -->
+            <a href="{{ url_for('google.login') }}" class="social-btn">
                 <img src="{{ url_for('static', filename='icons/google.png') }}">
-                Sign in with Google
+                Sign up with Google
             </a>
 
-            <a href="{{ url_for('auth.facebook_login') }}" class="social-btn">
+            <a href="{{ url_for('facebook.login') }}" class="social-btn">
                 <img src="{{ url_for('static', filename='icons/facebook.png') }}" alt="Facebook">
-                Sign in with Facebook
+                Sign up with Facebook
             </a>
 
             <p class="bottom-link">

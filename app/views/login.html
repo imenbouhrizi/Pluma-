@@ -10,12 +10,11 @@
         <div class="brand">
             <img src="{{ url_for('static', filename='images/logo.png') }}" alt="logo">
             <span>pluma</span>
-
         </div>
 
         <img class="auth-illustration login-img"
-        src="{{ url_for('static', filename='images/login.png') }}"
-        alt="login">
+             src="{{ url_for('static', filename='images/login.png') }}"
+             alt="login">
 
         <div class="welcome-text">
             <h2>Welcome to Pluma</h2>
@@ -27,6 +26,7 @@
         <h1>Welcome</h1>
         <p class="subtitle">Start Managing Your Finance Faster and better</p>
 
+        <!-- Formulaire de connexion -->
         <form method="POST" action="{{ url_for('auth.login') }}">
 
             <label>Email Here</label>
@@ -41,8 +41,9 @@
                 <input type="password" name="password" placeholder="at least 8 characters" required>
             </div>
 
+            <!-- ✅ Lien vers Forgot Password -->
             <div class="forgot">
-                <a href="#">Forget password?</a>
+                <a href="{{ url_for('auth.forgot_password') }}">Forgot password?</a>
             </div>
 
             <button type="submit" class="auth-btn">Login</button>
@@ -53,15 +54,16 @@
                 <span></span>
             </div>
 
-                <a href="{{ url_for('auth.google_login') }}" class="social-btn">
-                    <img src="{{ url_for('static', filename='icons/google.png') }}">
-                    Sign in with Google
-                </a>
+            <!-- Boutons OAuth -->
+            <a href="{{ url_for('google.login') }}" class="social-btn">
+                <img src="{{ url_for('static', filename='icons/google.png') }}">
+                Sign in with Google
+            </a>
 
-                <a href="{{ url_for('auth.facebook_login') }}" class="social-btn">
-                    <img src="{{ url_for('static', filename='icons/facebook.png') }}" alt="Facebook">
-                    Sign in with Facebook
-                </a>
+            <a href="{{ url_for('facebook.login') }}" class="social-btn">
+                <img src="{{ url_for('static', filename='icons/facebook.png') }}" alt="Facebook">
+                Sign in with Facebook
+            </a>
 
             <p class="bottom-link">
                 New to financing?
