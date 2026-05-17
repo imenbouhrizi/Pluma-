@@ -1,0 +1,276 @@
+.transactions-page{
+    margin-left:200px;
+    padding:90px 35px 30px;
+    background:#f4f6fa;
+    min-height:100vh;
+}
+
+.transaction-top{
+    display:grid;
+    grid-template-columns:2fr 1fr;
+    gap:25px;
+}
+
+.section-title,
+.expense-header{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-bottom:15px;
+}
+
+.section-title h2,
+.expense-header h2,
+.recent-header h2{
+    color:#2f3b63;
+    font-size:22px;
+}
+
+.section-title span{
+    color:#24006d;
+    font-weight:700;
+}
+
+.cards-wrapper{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:25px;
+}
+
+.bank-card{
+    height:180px;
+    border-radius:18px;
+    padding:22px;
+    position:relative;
+}
+
+.active-card{
+    background:linear-gradient(135deg,#4b40dc,#24006d);
+    color:white;
+}
+
+.light-card{
+    background:white;
+    color:#35446b;
+    border:1px solid #e5e7f0;
+}
+
+.card-chip{
+    position:absolute;
+    top:22px;
+    right:22px;
+    font-size:28px;
+}
+
+.bank-card p{
+    font-size:12px;
+    margin:0;
+    opacity:.8;
+}
+
+.bank-card h3{
+    margin:4px 0 30px;
+    font-size:22px;
+}
+
+.card-info{
+    display:flex;
+    gap:55px;
+}
+
+.card-info span{
+    display:block;
+    font-size:10px;
+    opacity:.7;
+}
+
+.card-info strong{
+    font-size:12px;
+}
+
+.card-number{
+    margin-top:25px;
+    font-size:20px;
+    font-weight:700;
+}
+
+.expense-card{
+    background:white;
+    border-radius:18px;
+    padding:20px;
+}
+
+.expense-header button{
+    border:1px solid #e5e7f0;
+    background:white;
+    border-radius:10px;
+    padding:9px 14px;
+}
+
+.bar-chart{
+    height:135px;
+    display:flex;
+    align-items:end;
+    gap:18px;
+    justify-content:center;
+    margin-top:15px;
+}
+
+.bar{
+    width:34px;
+    background:#eef1f7;
+    border-radius:10px;
+}
+
+.bar.small{height:70px;}
+.bar.medium{height:75px;}
+.bar.tall{height:110px;}
+.bar.short{height:38px;}
+
+.bar.active{
+    height:120px;
+    background:#27d3c3;
+    position:relative;
+}
+
+.bar.active span{
+    position:absolute;
+    top:-25px;
+    left:-15px;
+    font-size:12px;
+    color:#35446b;
+    font-weight:700;
+}
+
+.months{
+    display:flex;
+    justify-content:space-around;
+    margin-top:10px;
+    color:#8ca0c5;
+    font-size:12px;
+}
+
+.recent-header{
+    margin-top:25px;
+}
+
+.recent-actions{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin:15px 0;
+}
+
+.tabs{
+    display:flex;
+    gap:60px;
+}
+
+.tabs span{
+    color:#8ca0c5;
+    font-size:14px;
+    padding-bottom:10px;
+}
+
+.tabs .active{
+    color:#3d3dff;
+    border-bottom:3px solid #3d3dff;
+    font-weight:700;
+}
+
+.right-actions{
+    display:flex;
+    gap:12px;
+}
+
+.date-filter,
+.add-btn{
+    border:none;
+    border-radius:14px;
+    padding:12px 18px;
+}
+
+.date-filter{
+    background:white;
+    color:#4d5b7c;
+}
+
+.add-btn{
+    background:#24006d;
+    color:white;
+}
+
+.transactions-table-card{
+    background:white;
+    border-radius:22px;
+    padding:20px;
+}
+
+table{
+    width:100%;
+    border-collapse:collapse;
+}
+
+thead th{
+    text-align:left;
+    color:#82a0d6;
+    font-size:14px;
+    padding:12px;
+}
+
+tbody td{
+    padding:14px 12px;
+    border-top:1px solid #eef1f7;
+    color:#3c3c3c;
+    font-size:14px;
+}
+
+.circle{
+    width:28px;
+    height:28px;
+    border:2px solid #7ca0d8;
+    color:#7ca0d8;
+    border-radius:50%;
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    margin-right:10px;
+}
+
+.negative{
+    color:#ff00d9;
+    font-weight:700;
+}
+
+.positive{
+    color:#20d6b5;
+    font-weight:700;
+}
+
+.download-btn{
+    border:1px solid #26008a;
+    color:#26008a;
+    background:white;
+    border-radius:20px;
+    padding:8px 18px;
+}
+
+.pagination{
+    display:flex;
+    justify-content:flex-end;
+    align-items:center;
+    gap:18px;
+    margin-top:25px;
+    color:#24006d;
+    font-weight:700;
+}
+
+.page{
+    padding:8px 11px;
+}
+
+.page.active{
+    background:#24006d;
+    color:white;
+    border-radius:10px;
+}
