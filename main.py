@@ -18,7 +18,23 @@ def create_app():
     ])
 
     app.config['SECRET_KEY'] = 'supersecretkey'
-    app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///pluma.db'
+# --------------------------------------------------------------------------------------------------
+# REMARQUE :
+# Pour cette version, nous changeons la base SQLite locale (pluma.db) vers MySQL XAMPP
+# Base utilisée : pluma_budget
+# 
+# Avant :
+# app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///pluma.db'
+#
+# Après :
+# app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root:@localhost/pluma_budget'
+#
+# ✅ Chaque membre du groupe doit créer localement la même base MySQL : pluma_budget
+# ✅ N'oubliez pas d'installer le driver MySQL pour Python : pip install pymysql
+# ✅ Assurez-vous que Apache + MySQL sont lancés dans XAMPP avant de démarrer Flask
+
+# --------------------------------------------------------------------------------------------------
+    app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root:@localhost/pluma_budget'
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
     init_db(app)
