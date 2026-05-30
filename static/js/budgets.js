@@ -98,12 +98,6 @@ document.addEventListener("DOMContentLoaded", function(){
             document.getElementById("edit_start_date").value = this.dataset.startDate || "";
             document.getElementById("edit_end_date").value = this.dataset.endDate || "";
 
-            const categoryId = this.dataset.categoryId || "";
-            const categoryRadios = document.querySelectorAll(".edit-category-radio");
-
-            categoryRadios.forEach(function(radio){
-                radio.checked = radio.value === categoryId;
-            });
 
             openModalById("editBudgetModal");
         });
