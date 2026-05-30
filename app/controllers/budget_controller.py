@@ -3,10 +3,32 @@ from app.utils.auth import login_required
 from config.db import db
 from app.models.budget_model import Budget
 from app.models.category_model import Category
+from app.models.transaction_model import Transaction
+from app.models.notification_model import Notification
 from datetime import datetime, timedelta
+import random
 
 budget_bp = Blueprint("budgets", __name__)
 
+def check_budget_exceeded(budget):
+    if budget.spent_amount > budget.total_amount:
+        existing = Notification.query.filter_by(
+            user_id=budget.owner_id,
+            type="budget_exceeded",
+            related_id=budget.id,
+            is_read=False
+        ).first()
+
+        if not existing:
+            notification = Notification(
+                user_id=budget.owner_id,
+                title="Budget dépassé",
+                message=f"Le budget '{budget.name}' a dépassé sa limite de {budget.total_amount:.2f} {budget.currency}.",
+                type="budget_exceeded",
+                related_id=budget.id,
+                is_read=False
+            )
+            db.session.add(notification)
 
 def parse_date(date_value):
     if not date_value:
@@ -30,35 +52,94 @@ def get_current_monthly_budget(user_id):
     return 0, "EUR"
 
 
+def find_manual_budget_transaction(user_id, category, budget_name):
+    return Transaction.query.filter_by(
+        user_id=user_id,
+        type="expense",
+        category=category,
+        description=budget_name,
+        card="Budget"
+    ).filter(
+        Transaction.title.like("Ajustement budget%")
+    ).first()
+
+
+def sync_budget_spent_from_transactions(budget):
+    total_expense = db.session.query(
+        db.func.sum(Transaction.amount)
+    ).filter(
+        Transaction.user_id == budget.owner_id,
+        Transaction.type == "expense",
+        Transaction.category == budget.category,
+        Transaction.description == budget.name
+    ).scalar() or 0
+
+    budget.spent_amount = total_expense
+    budget.remaining_amount = budget.total_amount - budget.spent_amount
+
+
+def upsert_manual_budget_transaction(budget, target_spent):
+    manual_transaction = find_manual_budget_transaction(
+        budget.owner_id,
+        budget.category,
+        budget.name
+    )
+
+    if target_spent > 0:
+        if manual_transaction:
+            manual_transaction.amount = target_spent
+            manual_transaction.title = f"Ajustement budget - {budget.name}"
+            manual_transaction.category = budget.category
+            manual_transaction.description = budget.name
+            manual_transaction.card = "Budget"
+        else:
+            transaction = Transaction(
+                title=f"Ajustement budget - {budget.name}",
+                transaction_code="#" + str(random.randint(10000000, 99999999)),
+                amount=target_spent,
+                type="expense",
+                category=budget.category,
+                card="Budget",
+                description=budget.name,
+                user_id=budget.owner_id
+            )
+            db.session.add(transaction)
+
+    elif manual_transaction:
+        db.session.delete(manual_transaction)
+
+    budget.spent_amount = target_spent
+    budget.remaining_amount = budget.total_amount - budget.spent_amount
+    check_budget_exceeded(budget)
+
+
 @budget_bp.route("/")
 @login_required
 def index():
     user_id = session.get("user_id")
     selected_month = request.args.get("month", "all")
-
     selected_range = request.args.get("range", "6M")
+
     today = datetime.utcnow().date()
-    
+
     if selected_range == "7D":
-        start_filter = today.replace() - timedelta(days=7)
+        start_filter = today - timedelta(days=7)
     elif selected_range == "30D":
-        start_filter = today.replace() - timedelta(days=30)
+        start_filter = today - timedelta(days=30)
     elif selected_range == "3M":
-        start_filter = today.replace() - timedelta(days=90)
+        start_filter = today - timedelta(days=90)
     elif selected_range == "6M":
-        start_filter = today.replace() - timedelta(days=180)
+        start_filter = today - timedelta(days=180)
     elif selected_range == "1Y":
-        start_filter = today.replace() - timedelta(days=365)
-        
+        start_filter = today - timedelta(days=365)
     else:
-        
         start_filter = None
 
     query = Budget.query.filter_by(
         owner_id=user_id,
         is_shared=False
     )
-        
+
     if start_filter:
         query = query.filter(Budget.start_date >= start_filter)
 
@@ -97,10 +178,7 @@ def index():
     if total_budget > 0:
         for data in category_totals.values():
             percent = (data["spent"] / total_budget) * 100
-            end = start + percent
-
-            if end > 100:
-                end = 100
+            end = min(start + percent, 100)
 
             if percent > 0:
                 donut_parts.append(f'{data["color"]} {start}% {end}%')
@@ -113,7 +191,7 @@ def index():
     if start < 100:
         donut_parts.append(f"#e8eaf1 {start}% 100%")
 
-    donut_gradient = ", ".join(donut_parts) if donut_parts else "#e8eaf1 0% 100%"
+    donut_gradient = ", ".join(donut_parts)
 
     return render_template(
         "budgets.html",
@@ -213,6 +291,7 @@ def edit_category(category_id):
 
     for budget in budgets:
         budget.category = category.name
+        sync_budget_spent_from_transactions(budget)
 
     db.session.commit()
 
@@ -257,23 +336,16 @@ def add():
 
     current_monthly_budget, current_currency = get_current_monthly_budget(user_id)
 
-    if current_monthly_budget > 0:
-        monthly_budget_value = current_monthly_budget
-        final_currency = current_currency
-    else:
-        monthly_budget_value = 0
-        final_currency = currency
-
     new_budget = Budget(
         name=name,
         category=category.name,
         category_id=category.id,
         type="individual",
-        monthly_budget=monthly_budget_value,
+        monthly_budget=current_monthly_budget if current_monthly_budget > 0 else 0,
         total_amount=total_amount,
-        spent_amount=spent_amount,
-        remaining_amount=total_amount - spent_amount,
-        currency=final_currency,
+        spent_amount=0,
+        remaining_amount=total_amount,
+        currency=current_currency if current_monthly_budget > 0 else currency,
         start_date=start_date,
         end_date=end_date,
         period="Custom",
@@ -282,6 +354,10 @@ def add():
     )
 
     db.session.add(new_budget)
+    db.session.flush()
+
+    upsert_manual_budget_transaction(new_budget, spent_amount)
+
     db.session.commit()
 
     flash("Budget créé avec succès.", "success")
@@ -302,6 +378,9 @@ def edit(budget_id):
         flash("Budget introuvable.", "danger")
         return redirect(url_for("budgets.index"))
 
+    old_name = budget.name
+    old_category = budget.category
+
     try:
         total_amount = float(request.form.get("total_amount", 0))
         spent_amount = float(request.form.get("spent_amount", 0))
@@ -315,14 +394,25 @@ def edit(budget_id):
         flash("Le montant total doit être supérieur à 0.", "danger")
         return redirect(url_for("budgets.index"))
 
+    old_manual_transaction = find_manual_budget_transaction(
+        user_id,
+        old_category,
+        old_name
+    )
+
     budget.name = request.form.get("name", "").strip()
     budget.total_amount = total_amount
-    budget.spent_amount = spent_amount
-    budget.remaining_amount = total_amount - spent_amount
     budget.currency = request.form.get("currency", budget.currency)
     budget.start_date = start_date
     budget.end_date = end_date
     budget.period = "Custom"
+
+    if old_manual_transaction:
+        old_manual_transaction.title = f"Ajustement budget - {budget.name}"
+        old_manual_transaction.category = budget.category
+        old_manual_transaction.description = budget.name
+
+    upsert_manual_budget_transaction(budget, spent_amount)
 
     db.session.commit()
 
@@ -343,6 +433,15 @@ def delete(budget_id):
     if not budget:
         flash("Budget introuvable.", "danger")
         return redirect(url_for("budgets.index"))
+
+    manual_transaction = find_manual_budget_transaction(
+        user_id,
+        budget.category,
+        budget.name
+    )
+
+    if manual_transaction:
+        db.session.delete(manual_transaction)
 
     db.session.delete(budget)
     db.session.commit()
