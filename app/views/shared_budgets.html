@@ -1,0 +1,639 @@
+{% extends "dashboard_base.html" %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/budgets.css') }}">
+{% endblock %}
+
+{% block dashboard_content %}
+
+<div class="budget-page">
+
+    <div class="budget-tabs">
+        <a href="{{ url_for('budgets.index') }}">Budget</a>
+        <a href="{{ url_for('shared_budgets.index') }}" class="active">Shared Budget</a>
+    </div>
+
+    <div class="budget-header">
+        <h3>Shared Budgets</h3>
+
+        <button type="button" class="create-btn open-shared-modal">
+            <i class="bi bi-plus-lg"></i>
+            Create Shared Budget
+        </button>
+    </div>
+
+    <div class="budget-grid">
+
+        {% for item in shared_budgets %}
+        {% set shared_budget = item.shared_budget %}
+        {% set role = item.role %}
+        {% set percent = (shared_budget.spent_amount / shared_budget.total_amount * 100) if shared_budget.total_amount > 0 else 0 %}
+
+        <div class="budget-card">
+
+            <div class="card-top">
+                <div class="budget-icon" style="--icon-color:#7c4dff;">
+                    <i class="bi bi-people-fill"></i>
+                </div>
+
+                <span>{{ "%.2f"|format(shared_budget.total_amount) }} {{ shared_budget.currency }}</span>
+
+                {% if role == "admin" %}
+                <div class="card-actions-icons">
+
+                    <button type="button"
+                            class="open-edit-shared-modal"
+                            data-id="{{ shared_budget.id }}"
+                            data-name="{{ shared_budget.name }}"
+                            data-total="{{ shared_budget.total_amount }}"
+                            data-currency="{{ shared_budget.currency }}"
+                            data-start-date="{{ shared_budget.start_date.strftime('%Y-%m-%d') if shared_budget.start_date else '' }}"
+                            data-end-date="{{ shared_budget.end_date.strftime('%Y-%m-%d') if shared_budget.end_date else '' }}"
+                            data-categories="{% for c in shared_budget.categories %}{{ c.category_id }}{% if not loop.last %},{% endif %}{% endfor %}">
+                        <i class="bi bi-pencil-fill"></i>
+                    </button>
+                    
+                    <form method="POST" action="{{ url_for('shared_budgets.delete', shared_budget_id=shared_budget.id) }}">
+                        <button type="submit" class="shared-budget-delete-btn">
+                        <i class="bi bi-trash"></i>
+                        </button>
+                    </form>
+
+                </div>
+                {% endif %}
+            </div>
+
+            <h4>{{ shared_budget.name }}</h4>
+
+            <div class="card-amount">
+                <strong>Spent {{ "%.2f"|format(shared_budget.spent_amount) }} {{ shared_budget.currency }}</strong>
+                <small>Left {{ "%.2f"|format(shared_budget.remaining_amount) }} {{ shared_budget.currency }}</small>
+            </div>
+
+            <div class="mini-progress">
+                <div class="mini-progress-fill"
+                     style="--progress-width: {{ percent }}%; --progress-color:#7c4dff;">
+                </div>
+            </div>
+
+            <p class="empty-message">Role : {{ role }}</p>
+            <p class="empty-message">Members : {{ shared_budget.members|length }}</p>
+
+            <div class="budget-actions">
+                <button type="button"
+                        class="create-btn open-view-modal"
+                        data-budget-id="{{ shared_budget.id }}">
+                    View
+                </button>
+
+                {% if role == "admin" %}
+                <button type="button"
+                        class="add-category-btn open-members-modal"
+                        data-budget-id="{{ shared_budget.id }}">
+                    Manage Members
+                </button>
+                {% endif %}
+            </div>
+
+        </div>
+
+        {% else %}
+        <p class="empty-message">Aucun budget partagé pour le moment.</p>
+        {% endfor %}
+
+    </div>
+
+</div>
+
+<!-- CREATE SHARED BUDGET MODAL -->
+<div class="modal-overlay" id="sharedBudgetModal">
+    <div class="budget-modal">
+
+        <div class="modal-header">
+            <h3>Create Shared Budget</h3>
+            <button type="button" class="close-shared-modal">
+                <i class="bi bi-x-lg"></i>
+            </button>
+        </div>
+
+        <form method="POST" action="{{ url_for('shared_budgets.create') }}" class="modal-form">
+
+            <label>Nom budget partagé</label>
+            <input type="text" name="name" placeholder="Ex: Voyage Bali" required>
+
+            <label>Montant total</label>
+            <input type="number" step="0.01" min="0.01" name="total_amount" required>
+
+            <label>Devise</label>
+            <select name="currency">
+                <option value="EUR">EUR</option>
+                <option value="USD">USD</option>
+                <option value="TND">TND</option>
+            </select>
+
+            <label>Date début</label>
+            <input type="date" name="start_date" required>
+
+            <label>Date fin</label>
+            <input type="date" name="end_date" required>
+
+            <label class="full-label">Catégories autorisées</label>
+
+            <div class="category-choice-box">
+                {% for category in categories %}
+                <label class="category-choice">
+                    <input type="checkbox" name="category_ids" value="{{ category.id }}">
+
+                    <div class="category-content">
+                        <div class="category-left">
+                            <span class="category-choice-icon" style="--icon-color: {{ category.color }};">
+                                <i class="bi {{ category.icon }}"></i>
+                            </span>
+                            <p>{{ category.name }}</p>
+                        </div>
+                    </div>
+                </label>
+                {% else %}
+                <p class="empty-message">Ajoutez d’abord des catégories.</p>
+                {% endfor %}
+            </div>
+
+            <label>Membres à inviter</label>
+            <textarea name="emails"
+                      rows="4"
+                      placeholder="Ex: user1@gmail.com, user2@gmail.com"
+                      style="width:100%; padding:14px 16px; border:1px solid #ddd; border-radius:12px;"></textarea>
+
+            <button type="submit" class="modal-submit">
+                Create Shared Budget
+            </button>
+
+        </form>
+
+    </div>
+</div>
+
+<!-- MANAGE MEMBERS MODAL -->
+<div class="modal-overlay" id="membersModal">
+    <div class="budget-modal">
+
+        <div class="modal-header">
+            <h3>Manage Members</h3>
+            <button type="button" class="close-members-modal">
+                <i class="bi bi-x-lg"></i>
+            </button>
+        </div>
+
+        <div id="membersContent">
+
+            {% for item in shared_budgets %}
+            {% set shared_budget = item.shared_budget %}
+
+            <div class="members-section"
+                 data-budget-id="{{ shared_budget.id }}"
+                 style="display:none;">
+
+                <h3>Admins</h3>
+
+                <div class="members-list">
+                    {% for member in shared_budget.members %}
+                    {% if member.role == "admin" %}
+                    <div class="member-card">
+
+                        <div class="member-left">
+                            <div class="member-avatar">
+                                <i class="bi bi-person-fill"></i>
+                            </div>
+
+                            <div class="member-info">
+                                <h4>{{ member.user.email.split('@')[0] if member.user and member.user.email else 'Admin' }}</h4>
+                                <p>{{ member.user.email if member.user else '' }}</p>
+                                <small class="status-badge accepted">Role : admin</small>
+                            </div>
+                        </div>
+
+                        <div class="member-actions">
+                            {% if member.user_id != shared_budget.creator_id %}
+                            <form method="POST" action="{{ url_for('shared_budgets.remove_member', member_id=member.id) }}">
+                                <button type="submit" class="member-action-btn remove">
+                                    <i class="bi bi-trash-fill"></i>
+                                </button>
+                            </form>
+                            {% else %}
+                            <span class="admin-owner-badge">Owner</span>
+                            {% endif %}
+                        </div>
+
+                    </div>
+                    {% endif %}
+                    {% endfor %}
+                </div>
+
+                <h3 style="margin-top:35px;">Membres</h3>
+
+                <div class="members-list">
+                    {% for member in shared_budget.members %}
+                    {% if member.role == "user" %}
+
+                    <div class="member-card">
+
+                        <div class="member-left">
+                            <div class="member-avatar user-avatar">
+                                <i class="bi bi-person-fill"></i>
+                            </div>
+
+                            <div class="member-info">
+                                <h4>{{ member.user.email.split('@')[0] if member.user and member.user.email else 'User' }}</h4>
+                                <p>{{ member.user.email if member.user else '' }}</p>
+                                <small class="status-badge accepted">Statut : membre</small>
+                            </div>
+                        </div>
+
+                        <div class="member-actions-clean">
+                            <form method="POST" action="{{ url_for('shared_budgets.change_role', member_id=member.id) }}">
+                                <input type="hidden" name="role" value="admin">
+                                <button type="submit" class="member-action-btn promote">
+                                    Make Admin
+                                </button>
+                            </form>
+
+                            <form method="POST" action="{{ url_for('shared_budgets.remove_member', member_id=member.id) }}">
+                                <button type="submit" class="member-action-btn remove">
+                                    <i class="bi bi-trash-fill"></i>
+                                </button>
+                            </form>
+                        </div>
+
+                    </div>
+
+                    {% endif %}
+                    {% endfor %}
+                </div>
+
+                <h3 style="margin-top:35px;">Invitations</h3>
+
+                <div class="members-list">
+
+                    {% for invitation in shared_budget.invitations %}
+
+                    {% set ns = namespace(already_member=false) %}
+
+                    {% for member in shared_budget.members %}
+                        {% if member.user_id == invitation.invited_user_id %}
+                            {% set ns.already_member = true %}
+                        {% endif %}
+                    {% endfor %}
+
+                    {% if invitation.status != "accepted" and not ns.already_member %}
+
+                    <div class="member-card">
+                        <div class="member-left">
+                            <div class="member-avatar invitation-avatar">
+                                <i class="bi bi-envelope-fill"></i>
+                            </div>
+
+                            <div class="member-info">
+                                <h4>{{ invitation.invited_user.email.split('@')[0] if invitation.invited_user and invitation.invited_user.email else 'Invité' }}</h4>
+                                <p>{{ invitation.invited_user.email if invitation.invited_user else '' }}</p>
+
+                                {% if invitation.status == "pending" %}
+                                <small class="status-badge pending">Statut : en attente</small>
+                                {% elif invitation.status == "refused" %}
+                                <small class="status-badge refused">Statut : refusé</small>
+                                {% endif %}
+                            </div>
+                        </div>
+
+                        {% if invitation.status == "pending" %}
+                        <div class="member-actions-clean">
+                            <form method="POST" action="{{ url_for('shared_budgets.cancel_invitation', invitation_id=invitation.id) }}">
+                                <button type="submit" class="member-action-btn cancel">
+                                    Annuler
+                                </button>
+                            </form>
+                        </div>
+                        {% endif %}
+                    </div>
+
+                    {% endif %}
+                    {% endfor %}
+
+                </div>
+
+                <h3 style="margin-top:35px;">Envoyer une autre invitation</h3>
+
+                <form method="POST"
+                      action="{{ url_for('shared_budgets.invite_member', shared_budget_id=shared_budget.id) }}"
+                      class="modal-form">
+
+                    <label>Email</label>
+
+                    <textarea name="emails"
+                              rows="3"
+                              placeholder="Ex: user1@gmail.com, user2@gmail.com"
+                              style="width:100%; padding:14px 16px; border:1px solid #ddd; border-radius:12px;"></textarea>
+
+                    <button type="submit" class="modal-submit">
+                        Envoyer invitation
+                    </button>
+
+                </form>
+
+            </div>
+            {% endfor %}
+
+        </div>
+
+    </div>
+</div>
+
+<!-- EDIT SHARED BUDGET MODAL -->
+<div class="modal-overlay" id="editSharedBudgetModal">
+    <div class="budget-modal">
+
+        <div class="modal-header">
+            <h3>Edit Shared Budget</h3>
+            <button type="button" class="close-edit-shared-modal">
+                <i class="bi bi-x-lg"></i>
+            </button>
+        </div>
+
+        <form method="POST" id="editSharedBudgetForm" class="modal-form">
+
+            <label>Nom budget partagé</label>
+            <input type="text" name="name" id="edit_shared_name" required>
+
+            <label>Montant total</label>
+            <input type="number" step="0.01" min="0.01" name="total_amount" id="edit_shared_total" required>
+
+            <label>Devise</label>
+            <select name="currency" id="edit_shared_currency">
+                <option value="EUR">EUR</option>
+                <option value="USD">USD</option>
+                <option value="TND">TND</option>
+            </select>
+
+            <label>Date début</label>
+            <input type="date" name="start_date" id="edit_shared_start" required>
+
+            <label>Date fin</label>
+            <input type="date" name="end_date" id="edit_shared_end" required>
+
+            <label class="full-label">Catégories autorisées</label>
+
+            <div class="category-choice-box">
+                {% for category in categories %}
+                <label class="category-choice">
+                    <input type="checkbox"
+                           name="category_ids"
+                           value="{{ category.id }}"
+                           class="edit-shared-category">
+
+                    <div class="category-content">
+                        <div class="category-left">
+                            <span class="category-choice-icon" style="--icon-color: {{ category.color }};">
+                                <i class="bi {{ category.icon }}"></i>
+                            </span>
+                            <p>{{ category.name }}</p>
+                        </div>
+                    </div>
+                </label>
+                {% endfor %}
+            </div>
+
+            <button type="submit" class="modal-submit">
+                Save Changes
+            </button>
+
+        </form>
+
+    </div>
+</div>
+
+<!-- VIEW SHARED BUDGET MODAL -->
+<div class="modal-overlay" id="viewBudgetModal">
+    <div class="budget-modal large-modal">
+
+        <div class="modal-header">
+            <h3>Shared Budget Details</h3>
+            <button type="button" class="close-view-modal">
+                <i class="bi bi-x-lg"></i>
+            </button>
+        </div>
+
+        <div id="viewBudgetContent">
+
+            {% for item in shared_budgets %}
+            {% set shared_budget = item.shared_budget %}
+            {% set role = item.role %}
+
+            <div class="view-budget-section"
+                 data-budget-id="{{ shared_budget.id }}"
+                 style="display:none;">
+
+                <h2>{{ shared_budget.name }}</h2>
+
+                <div class="stats-grid">
+
+    <div class="stat-card">
+        <div class="stat-icon stat-total">
+            <i class="bi bi-wallet2"></i>
+        </div>
+        <span>Total Budget</span>
+        <h3>{{ "%.2f"|format(shared_budget.total_amount) }} {{ shared_budget.currency }}</h3>
+    </div>
+
+    <div class="stat-card">
+        <div class="stat-icon stat-spent">
+            <i class="bi bi-cash-stack"></i>
+        </div>
+        <span>Spent</span>
+        <h3>{{ "%.2f"|format(shared_budget.spent_amount) }} {{ shared_budget.currency }}</h3>
+    </div>
+
+    <div class="stat-card">
+        <div class="stat-icon stat-remaining">
+            <i class="bi bi-coin"></i>
+        </div>
+        <span>Remaining</span>
+        <h3>{{ "%.2f"|format(shared_budget.remaining_amount) }} {{ shared_budget.currency }}</h3>
+    </div>
+
+    <div class="stat-card">
+        <div class="stat-icon stat-members">
+            <i class="bi bi-people-fill"></i>
+        </div>
+        <span>Members</span>
+        <h3>{{ shared_budget.members|length }}</h3>
+    </div>
+
+</div>
+
+                <div class="view-date-row">
+                    <span>
+                        <strong>Date début :</strong>
+                        {{ shared_budget.start_date.strftime('%d/%m/%Y') if shared_budget.start_date else '-' }}
+                    </span>
+
+                    <span>
+                        <strong>Date fin :</strong>
+                        {{ shared_budget.end_date.strftime('%d/%m/%Y') if shared_budget.end_date else '-' }}
+                    </span>
+                </div>
+
+                <h3 style="margin-top:30px;">Catégories autorisées</h3>
+                
+                <div class="view-category-list">
+                    {% for category in shared_budget.categories %}
+                    <div class="view-category-card">
+                        
+                        <span class="category-choice-icon"
+                              style="--icon-color: {{ category.category_ref.color }};">
+                              <i class="bi {{ category.category_ref.icon }}"></i>
+                        </span>
+                        
+                        <div class="view-category-info">
+                            <h4>{{ category.category_ref.name }}</h4>
+                            <p>Catégorie disponible dans ce budget</p>
+                        </div>
+
+                    </div>
+                    {% else %}
+                    <p class="empty-message">Aucune catégorie autorisée.</p>
+                    {% endfor %}
+                </div>
+
+                <h3 style="margin-top:30px;">Dépenses</h3>
+
+                <div class="expense-list">
+                    {% for expense in shared_budget.expenses %}
+                    <div class="expense-row">
+                        <div>
+                            <h4>{{ expense.name }}</h4>
+                            <p>
+                                {{ expense.category_ref.name if expense.category_ref else 'Catégorie' }}
+                                · ajouté par
+                                {{ expense.added_by.email.split('@')[0] if expense.added_by and expense.added_by.email else 'user' }}
+                            </p>
+                        </div>
+
+                        <div class="expense-actions">
+                            
+                            <strong>{{ "%.2f"|format(expense.amount) }} {{ shared_budget.currency }}</strong>
+
+                            {% if role == "admin" %}
+                            <button type="button"
+                                    class="expense-edit-btn open-edit-expense-modal"
+                                    data-expense-id="{{ expense.id }}"
+                                    data-name="{{ expense.name }}"
+                                    data-category-id="{{ expense.category_id }}"
+                                    data-amount="{{ expense.amount }}"
+                                    data-categories="{% for category in shared_budget.categories %}{{ category.category_id }}::{{ category.category_ref.name }}{% if not loop.last %}||{% endif %}{% endfor %}">
+                                <i class="bi bi-pencil-fill"></i>
+                            </button>
+
+                            <form method="POST"
+                                  action="{{ url_for('shared_budgets.delete_expense', expense_id=expense.id) }}">
+                                <button type="submit" class="expense-delete-btn">
+                                     <i class="bi bi-trash-fill"></i>
+                                </button>
+                            </form>
+                            {% endif %}
+
+                        </div>
+                    </div>
+                    {% else %}
+                    <p class="empty-message">Aucune dépense pour le moment.</p>
+                    {% endfor %}
+                </div>
+
+                {% if role == "admin" %}
+                <button type="button"
+                        class="modal-submit open-expense-modal"
+                        data-budget-id="{{ shared_budget.id }}"
+                        data-categories="{% for category in shared_budget.categories %}{{ category.category_id }}::{{ category.category_ref.name }}{% if not loop.last %}||{% endif %}{% endfor %}">
+                    + Add Expense
+                </button>
+                {% endif %}
+
+            </div>
+
+            {% endfor %}
+
+        </div>
+
+    </div>
+</div>
+
+
+<!-- ADD EXPENSE MODAL -->
+<div class="modal-overlay" id="expenseModal">
+    <div class="budget-modal">
+
+        <div class="modal-header">
+            <h3>Add Expense</h3>
+            <button type="button" class="close-expense-modal">
+                <i class="bi bi-x-lg"></i>
+            </button>
+        </div>
+
+        <form method="POST" id="expenseForm" class="modal-form">
+
+            <label>Nom dépense</label>
+            <input type="text" name="name" placeholder="Ex: Billet avion" required>
+
+            <label>Catégorie</label>
+            <select name="category_id" id="expenseCategorySelect" required>
+            </select>
+
+            <label>Montant</label>
+            <input type="number" name="amount" step="0.01" min="0.01" placeholder="Ex: 150" required>
+
+            <button type="submit" class="modal-submit">
+                Ajouter dépense
+            </button>
+
+        </form>
+
+    </div>
+</div>
+
+<div id="shared-budget-data"
+     data-open-members="{{ open_members or '' }}">
+</div>
+
+
+<!-- EDIT EXPENSE MODAL -->
+<div class="modal-overlay" id="editExpenseModal">
+    <div class="budget-modal">
+
+        <div class="modal-header">
+            <h3>Edit Expense</h3>
+            <button type="button" class="close-edit-expense-modal">
+                <i class="bi bi-x-lg"></i>
+            </button>
+        </div>
+
+        <form method="POST" id="editExpenseForm" class="modal-form">
+
+            <label>Nom dépense</label>
+            <input type="text" name="name" id="edit_expense_name" required>
+
+            <label>Catégorie</label>
+            <select name="category_id" id="editExpenseCategorySelect" required></select>
+
+            <label>Montant</label>
+            <input type="number" name="amount" id="edit_expense_amount" step="0.01" min="0.01" required>
+
+            <button type="submit" class="modal-submit">
+                Save Expense
+            </button>
+
+        </form>
+
+    </div>
+</div>
+
+<script src="{{ url_for('static', filename='js/shared_budgets.js') }}"></script>
+
+{% endblock %}
