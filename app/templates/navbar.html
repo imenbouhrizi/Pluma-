@@ -1,7 +1,6 @@
 <div class="navbar">
 
-    <!-- Logo -->
-
+    <!-- LOGO -->
     <div class="navbar-logo">
 
         <img src="{{ url_for('static', filename='images/logop.png') }}"
@@ -11,25 +10,118 @@
 
     </div>
 
-
-    <!-- Partie droite -->
-
+    <!-- RIGHT -->
     <div class="navbar-right">
 
+        <!-- SEARCH -->
         <div class="nav-icon">
             <i class="bi bi-search"></i>
         </div>
 
+        <!-- NOTIFICATIONS -->
 
-        <div class="nav-icon notification">
+        {% set notifications =
+        Notification.query.filter_by(
+            user_id=session.get('user_id'),
+            is_read=False
+        ).order_by(Notification.created_at.desc()).all()
+        %}
+
+        <div class="nav-icon notification"
+             id="notificationBtn">
 
             <i class="bi bi-bell"></i>
 
-            <span class="badge">2</span>
+            {% if notifications|length > 0 %}
+            <span class="badge">
+                {{ notifications|length }}
+            </span>
+            {% endif %}
 
         </div>
 
+        <!-- DROPDOWN -->
 
+        <div class="notification-dropdown"
+             id="notificationDropdown">
+
+            <div class="notification-header">
+
+                <h4>Notifications</h4>
+
+            </div>
+
+            {% for notif in notifications %}
+
+            <div class="notification-item">
+
+                <div class="notification-icon">
+
+                    {% if notif.type == "budget_exceeded" %}
+                        <i class="bi bi-exclamation-triangle-fill"></i>
+                    {% else %}
+                        <i class="bi bi-people-fill"></i>
+                    {% endif %}
+
+                </div>
+
+                <div class="notification-content">
+
+                    <h5>{{ notif.title }}</h5>
+
+                    <p>{{ notif.message }}</p>
+
+                    {% if notif.type == "shared_budget_invitation" %}
+
+                    <div class="notification-actions">
+
+                        <form method="POST"
+                              action="{{ url_for('notifications.accept_invitation',
+                              notification_id=notif.id) }}">
+
+                            <button type="submit"
+                                    class="accept-btn">
+
+                                Accepter
+
+                            </button>
+
+                        </form>
+
+                        <form method="POST"
+                              action="{{ url_for('notifications.refuse_invitation',
+                              notification_id=notif.id) }}">
+
+                            <button type="submit"
+                                    class="refuse-btn">
+
+                                Refuser
+
+                            </button>
+
+                        </form>
+
+                    </div>
+
+                    {% endif %}
+
+                </div>
+
+            </div>
+
+            {% else %}
+
+            <div class="empty-notification">
+
+                <p>Aucune notification</p>
+
+            </div>
+
+            {% endfor %}
+
+        </div>
+
+        <!-- WALLET -->
         <button class="wallet-btn">
 
             <i class="bi bi-wallet2"></i>
@@ -38,11 +130,69 @@
 
         </button>
 
-
+        <!-- PROFILE -->
         <img class="profile-img"
-        src="{{ url_for('static', filename='images/profile.png') }}"
-        alt="profile">
+             src="{{ url_for('static', filename='images/profile.png') }}"
+             alt="profile">
 
     </div>
 
 </div>
+
+<script>
+
+document.addEventListener("DOMContentLoaded", function(){
+
+    const notificationBtn =
+        document.getElementById("notificationBtn");
+
+    const notificationDropdown =
+        document.getElementById("notificationDropdown");
+
+    if(notificationBtn){
+
+        notificationBtn.addEventListener("click", function(e){
+
+            e.stopPropagation();
+
+            notificationDropdown.classList.toggle("show");
+
+            fetch("/notifications/mark-as-read", {
+                method: "POST"
+            })
+            .then(response => response.json())
+            .then(data => {
+
+                const badge =
+                    notificationBtn.querySelector(".badge");
+
+                if(badge){
+                    badge.remove();
+                }
+
+            })
+            .catch(error => {
+                console.error(error);
+            });
+
+        });
+
+    }
+
+    document.addEventListener("click", function(e){
+
+        if(
+            !notificationDropdown.contains(e.target)
+            &&
+            !notificationBtn.contains(e.target)
+        ){
+
+            notificationDropdown.classList.remove("show");
+
+        }
+
+    });
+
+});
+
+</script>
