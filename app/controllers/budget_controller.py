@@ -302,17 +302,6 @@ def edit(budget_id):
         flash("Budget introuvable.", "danger")
         return redirect(url_for("budgets.index"))
 
-    category_id = request.form.get("category_id")
-
-    category = Category.query.filter_by(
-        id=category_id,
-        user_id=user_id
-    ).first()
-
-    if not category:
-        flash("Catégorie introuvable.", "danger")
-        return redirect(url_for("budgets.index"))
-
     try:
         total_amount = float(request.form.get("total_amount", 0))
         spent_amount = float(request.form.get("spent_amount", 0))
@@ -327,8 +316,6 @@ def edit(budget_id):
         return redirect(url_for("budgets.index"))
 
     budget.name = request.form.get("name", "").strip()
-    budget.category = category.name
-    budget.category_id = category.id
     budget.total_amount = total_amount
     budget.spent_amount = spent_amount
     budget.remaining_amount = total_amount - spent_amount
