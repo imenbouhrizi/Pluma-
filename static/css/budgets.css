@@ -105,7 +105,7 @@
     height:185px;
     border-radius:50%;
     margin:10px auto 0;
-    background:conic-gradient(#e8eaf1 0 100%);
+    background:conic-gradient(var(--donut-gradient, #e8eaf1 0 100%));
     display:flex;
     align-items:center;
     justify-content:center;
@@ -607,4 +607,470 @@
 .period-tabs a.active{
     background:#c7f6ea;
     color:#00a98f;
+}
+
+/* =========================
+   MEMBERS MODAL
+========================= */
+
+.members-section{
+    margin-top:10px;
+}
+
+.members-section h3{
+    margin-top:20px;
+    margin-bottom:15px;
+    font-size:18px;
+    font-weight:700;
+    color:#333;
+}
+
+.members-list{
+    display:flex;
+    flex-direction:column;
+    gap:18px;
+    margin-top:20px;
+}
+
+.member-card{
+    width:100%;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    padding:18px;
+    border:1px solid #ececec;
+    border-radius:18px;
+    background:#fff;
+    overflow:visible;
+}
+
+.member-left{
+    display:flex;
+    align-items:center;
+    gap:16px;
+    min-width:0;
+}
+
+.member-avatar{
+    width:55px;
+    height:55px;
+    flex-shrink:0;
+    border-radius:50%;
+    background:#7c4dff;
+    color:white;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:22px;
+}
+
+.user-avatar{
+    background:#24006d;
+}
+
+.invitation-avatar{
+    background:#ff9f43;
+}
+
+.admin-avatar{
+    background:#7c4dff;
+}
+
+.member-info h4{
+    margin:0;
+    font-size:15px;
+    font-weight:700;
+    color:#343b55;
+}
+
+.member-info p{
+    margin-top:5px;
+    color:#8f96b2;
+    font-size:13px;
+}
+
+.status-badge{
+    display:inline-block;
+    margin-top:6px;
+    padding:6px 10px;
+    border-radius:10px;
+    font-size:12px;
+    font-weight:700;
+}
+
+.status-badge.accepted{
+    background:#e9fff3;
+    color:#18a058;
+}
+
+.status-badge.pending{
+    background:#fff4dc;
+    color:#d98b00;
+}
+
+.status-badge.refused{
+    background:#ffe9e9;
+    color:#e63946;
+}
+
+.admin-owner-badge{
+    background:#efe8ff;
+    color:#7c4dff;
+    padding:9px 14px;
+    border-radius:10px;
+    font-weight:700;
+    font-size:13px;
+}
+
+.member-actions,
+.member-actions-clean{
+    display:flex;
+    align-items:center;
+    gap:10px;
+}
+
+.member-action-btn{
+    border:none;
+    border-radius:12px;
+    padding:10px 16px;
+    font-weight:700;
+    cursor:pointer;
+    transition:0.2s ease;
+}
+
+.member-action-btn.promote{
+    background:#efe8ff;
+    color:#6c3df4;
+}
+
+.member-action-btn.promote:hover{
+    background:#e4d8ff;
+}
+
+.member-action-btn.remove{
+    width:46px;
+    height:46px;
+    padding:0;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    background:#ffe9e9;
+    color:#e63946;
+}
+
+.member-action-btn.remove:hover{
+    background:#ffdede;
+}
+
+.member-action-btn.cancel{
+    background:#fff3dc;
+    color:#d98b00;
+}
+
+.member-action-btn.cancel:hover{
+    background:#ffe8b5;
+}
+
+
+.budget-tabs a{
+    padding-bottom:12px;
+    color:#8ba0c9;
+    font-weight:600;
+    text-decoration:none;
+}
+
+.budget-tabs a.active{
+    color:#2d38ff;
+    border-bottom:3px solid #2d38ff;
+}
+
+
+/* =========================
+   SHARED BUDGET VIEW MODAL
+========================= */
+
+.large-modal{
+    width:760px;
+    max-width:90%;
+}
+
+.view-budget-section h2{
+    margin:0 0 20px;
+    color:#343b55;
+    font-size:24px;
+    font-weight:700;
+}
+
+/* Stats cards */
+
+.stats-grid{
+    display:grid;
+    grid-template-columns:repeat(4, minmax(0,1fr));
+    gap:14px;
+    margin:20px 0 25px;
+}
+
+.stat-card{
+    background:white;
+    border:1px solid #e5e7f0;
+    border-radius:14px;
+    padding:16px;
+    min-height:135px;
+}
+
+.stat-icon{
+    width:42px;
+    height:42px;
+    border-radius:50%;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:20px;
+    margin-bottom:12px;
+}
+
+.stat-total{
+    background:#efe8ff;
+    color:#7c4dff;
+}
+
+.stat-spent{
+    background:#ffe9e9;
+    color:#e63946;
+}
+
+.stat-remaining{
+    background:#fff4dc;
+    color:#d98b00;
+}
+
+.stat-members{
+    background:#e9fff3;
+    color:#18a058;
+}
+
+.stat-card span{
+    display:block;
+    color:#8ba0c9;
+    font-size:13px;
+    font-weight:600;
+    margin-bottom:10px;
+}
+
+.stat-card h3{
+    margin:0;
+    color:#343b55;
+    font-size:17px;
+    font-weight:700;
+    line-height:1.35;
+}
+
+/* Dates */
+
+.view-date-row{
+    display:flex;
+    gap:16px;
+    flex-wrap:wrap;
+    margin:10px 0 25px;
+}
+
+.view-date-row span{
+    background:white;
+    border:1px solid #e5e7f0;
+    border-radius:12px;
+    padding:12px 16px;
+    color:#777;
+    font-size:13px;
+}
+
+.view-date-row strong{
+    color:#343b55;
+}
+
+/* Section titles */
+
+.view-budget-section h3{
+    margin:25px 0 15px;
+    color:#333;
+    font-size:17px;
+    font-weight:700;
+}
+
+/* Categories */
+
+.view-category-list{
+    display:grid;
+    grid-template-columns:repeat(2, minmax(0,1fr));
+    gap:12px;
+}
+
+.view-category-card{
+    display:flex;
+    align-items:center;
+    gap:14px;
+    border:1px solid #e5e7f0;
+    border-radius:12px;
+    background:white;
+    padding:12px 14px;
+    min-height:72px;
+}
+
+.view-category-card .category-choice-icon{
+    width:38px;
+    height:38px;
+    min-width:38px;
+    border-radius:12px;
+}
+
+.view-category-info h4{
+    margin:0;
+    color:#777;
+    font-size:14px;
+    font-weight:700;
+}
+
+.view-category-info p{
+    margin:4px 0 0;
+    color:#8f96b2;
+    font-size:12px;
+}
+
+/* Expenses */
+
+.expense-list{
+    display:flex;
+    flex-direction:column;
+    gap:12px;
+    margin-top:12px;
+    margin-bottom:22px;
+}
+
+.expense-row{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    gap:15px;
+    border:1px solid #e5e7f0;
+    border-radius:12px;
+    background:white;
+    padding:14px 16px;
+}
+
+.expense-row h4{
+    margin:0;
+    color:#343b55;
+    font-size:15px;
+    font-weight:700;
+}
+
+.expense-row p{
+    margin:5px 0 0;
+    color:#8f96b2;
+    font-size:12px;
+}
+
+.expense-row strong{
+    color:#24006d;
+    font-size:15px;
+    font-weight:700;
+    white-space:nowrap;
+}
+
+@media(max-width:900px){
+    .stats-grid{
+        grid-template-columns:repeat(2, 1fr);
+    }
+
+    .view-category-list{
+        grid-template-columns:1fr;
+    }
+}
+
+@media(max-width:600px){
+    .stats-grid{
+        grid-template-columns:1fr;
+    }
+
+    .expense-row{
+        flex-direction:column;
+        align-items:flex-start;
+    }
+}
+
+.shared-budget-delete-btn{
+    border:none;
+    background:transparent;
+    color:#c7cbd6;
+    cursor:pointer;
+    font-size:18px;
+    padding:0;
+    transition:all .2s ease;
+}
+
+.shared-budget-delete-btn:hover{
+    color:#ff3b3b !important;
+}
+
+/* =========================
+   EXPENSE ACTIONS
+========================= */
+
+.expense-actions{
+    display:flex;
+    align-items:center;
+    gap:10px;
+}
+
+.expense-actions form{
+    margin:0;
+}
+
+.expense-edit-btn,
+.expense-delete-btn{
+    width:38px;
+    height:38px;
+    border:none;
+    border-radius:10px;
+    cursor:pointer;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    transition:.2s;
+}
+
+.expense-edit-btn{
+    background:#f2edff;
+    color:#7c4dff;
+}
+
+.expense-edit-btn:hover{
+    background:#e7dcff;
+}
+
+.expense-delete-btn{
+    background:#fff0f0;
+    color:#e63946;
+}
+
+.expense-delete-btn:hover{
+    background:#ffe0e0;
+    color:#d90429;
+}
+
+.expense-edit-btn i,
+.expense-delete-btn i{
+    font-size:15px;
+}
+
+/* =========================
+   EDIT EXPENSE MODAL
+========================= */
+
+#editExpenseModal{
+    display:none;
+}
+
+#editExpenseModal .budget-modal{
+    width:600px;
+    max-width:90%;
 }
