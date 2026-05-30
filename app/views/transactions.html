@@ -10,74 +10,146 @@
 
     <div class="transaction-top">
 
-    <!-- Left : cards -->
-    <div class="cards-section">
+        <!-- MY CARDS -->
+        <div class="cards-section">
 
-        <div class="section-title">
-            <h2>My Cards</h2>
-            <span>+ Add Card</span>
-        </div>
+            <div class="section-title">
+                <h2>My Cards</h2>
 
-        <div class="cards-wrapper">
+                <button type="button" class="add-card-link open-card-modal">
+                    + Add Card
+                </button>
+            </div>
 
-            <!-- Card 1 -->
-            <div class="bank-card active-card">
+            <div class="cards-wrapper">
 
-                <div class="card-chip">
-                    <i class="bi bi-credit-card-2-front"></i>
-                </div>
+                {% for card in card_stats %}
 
-                <p>Balance</p>
-                <h3>$5,756</h3>
+                <div class="bank-card {% if loop.first %}active-card{% else %}light-card{% endif %}">
 
-                <div class="card-info">
-
-                    <div>
-                        <span>CARD HOLDER</span>
-                        <strong>Eddy Cusuma</strong>
+                    <div class="card-chip">
+                        <i class="bi bi-credit-card-2-front"></i>
                     </div>
 
-                    <div>
-                        <span>VALID THRU</span>
-                        <strong>12/22</strong>
+                    <form method="POST"
+                          action="{{ url_for('transactions.delete_card', card_id=card.id) }}"
+                          class="delete-card-form">
+
+                        <button type="submit" class="delete-card-btn">
+                            <i class="bi bi-trash"></i>
+                        </button>
+
+                    </form>
+
+                    <p>Balance</p>
+
+                    <h3>{{ "%.2f"|format(card.current_balance) }}</h3>
+
+                    <div class="card-info">
+
+                        <div>
+                            <span>INCOME</span>
+                            <strong>{{ "%.2f"|format(card.income) }}</strong>
+                        </div>
+
+                        <div>
+                            <span>EXPENSE</span>
+                            <strong>{{ "%.2f"|format(card.expense) }}</strong>
+                        </div>
+
+                    </div>
+
+                    <div class="card-bottom">
+                        <div class="card-number">{{ card.rib }}</div>
+                        <div class="card-type">{{ card.card_type }}</div>
                     </div>
 
                 </div>
 
-                <div class="card-number">
-                    3778 **** **** 1234
+                {% else %}
+
+                <div class="bank-card light-card empty-card">
+
+                    <div class="card-chip">
+                        <i class="bi bi-credit-card-2-front"></i>
+                    </div>
+
+                    <p>Balance</p>
+                    <h3>0.00</h3>
+
+                    <div class="card-info">
+
+                        <div>
+                            <span>INCOME</span>
+                            <strong>0.00</strong>
+                        </div>
+
+                        <div>
+                            <span>EXPENSE</span>
+                            <strong>0.00</strong>
+                        </div>
+
+                    </div>
+
+                    <div class="card-number">
+                        Add your first card
+                    </div>
+
                 </div>
+
+                {% endfor %}
 
             </div>
 
+        </div>
 
-            <!-- Card 2 -->
+        <!-- MY EXPENSE -->
+        <div class="expense-container">
 
-            <div class="bank-card light-card">
+            <div class="expense-header">
+                <h2>My Expense</h2>
+                <a href="{{ url_for('transactions.export_pdf') }}"
+                   class="export-btn"
+                   target="_blank">
+                   <i class="bi bi-upload"></i>
+                   Export
+                </a>
+            </div>
 
-                <div class="card-chip">
-                    <i class="bi bi-credit-card-2-front"></i>
-                </div>
+            <div class="expense-card">
 
-                <p>Balance</p>
-                <h3>$5,756</h3>
+                <div class="bar-chart">
 
-                <div class="card-info">
+                    {% for item in monthly_chart %}
 
-                    <div>
-                        <span>CARD HOLDER</span>
-                        <strong>Eddy Cusuma</strong>
+                    <div class="bar {% if item.active %}active{% endif %}"
+                         data-height="{{ item.height }}">
+
+                         {% if item.active %}
+                         <span>{{ "%.2f"|format(item.amount) }}</span>
+                         {% endif %}
+
                     </div>
 
-                    <div>
-                        <span>VALID THRU</span>
-                        <strong>12/22</strong>
-                    </div>
+                    {% else %}
+
+                    <div class="bar small"></div>
+                    <div class="bar medium"></div>
+                    <div class="bar tall"></div>
+                    <div class="bar short"></div>
+
+                    {% endfor %}
 
                 </div>
 
-                <div class="card-number">
-                    3778 **** **** 1234
+                <div class="months">
+
+                    {% for item in monthly_chart %}
+                    <span>{{ item.month }}</span>
+                    {% else %}
+                    <span>No data</span>
+                    {% endfor %}
+
                 </div>
 
             </div>
@@ -86,82 +158,66 @@
 
     </div>
 
-
-    <!-- Right expense -->
-
-    <div class="expense-container">
-
-        <div class="expense-header">
-
-            <h2>My Expense</h2>
-
-            <button class="export-btn">
-
-                <i class="bi bi-upload"></i>
-                Export
-
-            </button>
-
-        </div>
-
-
-        <div class="expense-card">
-
-            <div class="bar-chart">
-
-                <div class="bar small"></div>
-
-                <div class="bar tall"></div>
-
-                <div class="bar medium"></div>
-
-                <div class="bar short"></div>
-
-                <div class="bar active">
-                    <span>$12,500</span>
-                </div>
-
-                <div class="bar medium"></div>
-
-            </div>
-
-            <div class="months">
-
-                <span>Aug</span>
-                <span>Sep</span>
-                <span>Oct</span>
-                <span>Nov</span>
-                <span>Dec</span>
-                <span>Jan</span>
-
-            </div>
-
-        </div>
-
-    </div>
-
-</div>
-
+    <!-- RECENT TRANSACTIONS -->
     <div class="recent-header">
         <h2>Recent Transactions</h2>
     </div>
 
     <div class="recent-actions">
+
         <div class="tabs">
-            <span class="active">All Transactions</span>
-            <span>Income</span>
-            <span>Expense</span>
+
+            <a href="{{ url_for('transactions.index', type='all', start_date=start_date, end_date=end_date) }}"
+               class="{% if filter_type == 'all' %}active{% endif %}">
+                All Transactions
+            </a>
+
+            <a href="{{ url_for('transactions.index', type='income', start_date=start_date, end_date=end_date) }}"
+               class="{% if filter_type == 'income' %}active{% endif %}">
+                Income
+            </a>
+
+            <a href="{{ url_for('transactions.index', type='expense', start_date=start_date, end_date=end_date) }}"
+               class="{% if filter_type == 'expense' %}active{% endif %}">
+                Expense
+            </a>
+
         </div>
 
         <div class="right-actions">
-            <button class="date-filter"><i class="bi bi-calendar"></i> May 01 - May 15</button>
-            <button class="add-btn"><i class="bi bi-plus-lg"></i> Add Transaction</button>
+
+            <form method="GET" class="date-filter-form">
+
+                <input type="hidden" name="type" value="{{ filter_type }}">
+
+                <input type="date"
+                       name="start_date"
+                       value="{{ start_date or '' }}">
+
+                <input type="date"
+                       name="end_date"
+                       value="{{ end_date or '' }}">
+
+                <button type="submit">
+                    Filter
+                </button>
+
+            </form>
+
+            <button type="button" class="add-btn open-transaction-modal">
+                <i class="bi bi-plus-lg"></i>
+                Add Transaction
+            </button>
+
         </div>
+
     </div>
 
+    <!-- TABLE -->
     <div class="transactions-table-card">
 
         <table>
+
             <thead>
                 <tr>
                     <th>Description</th>
@@ -171,73 +227,278 @@
                     <th>Date</th>
                     <th>Amount</th>
                     <th>Receipt</th>
+                    <th>Actions</th>
                 </tr>
             </thead>
 
             <tbody>
-                <tr>
-                    <td><span class="circle up"><i class="bi bi-arrow-up"></i></span> Spotify Subscription</td>
-                    <td>#12548796</td>
-                    <td>Shopping</td>
-                    <td>1234 ****</td>
-                    <td>28 Jan, 12.30 AM</td>
-                    <td class="negative">-$2,500</td>
-                    <td><button class="download-btn">Download</button></td>
-                </tr>
+
+                {% for transaction in transactions.items %}
 
                 <tr>
-                    <td><span class="circle down"><i class="bi bi-arrow-down"></i></span> Freepik Sales</td>
-                    <td>#12548796</td>
-                    <td>Transfer</td>
-                    <td>1234 ****</td>
-                    <td>25 Jan, 10.40 PM</td>
-                    <td class="positive">+$750</td>
-                    <td><button class="download-btn">Download</button></td>
+
+                    <td>
+                        {% if transaction.type == "income" %}
+                        <span class="circle down">
+                            <i class="bi bi-arrow-down"></i>
+                        </span>
+                        {% else %}
+                        <span class="circle up">
+                            <i class="bi bi-arrow-up"></i>
+                        </span>
+                        {% endif %}
+
+                        {{ transaction.title }}
+                    </td>
+
+                    <td>{{ transaction.transaction_code }}</td>
+
+                    <td>{{ transaction.category }}</td>
+
+                    <td>{{ transaction.card if transaction.card else "Cash" }}</td>
+
+                    <td>{{ transaction.created_at.strftime('%d %b, %I:%M %p') }}</td>
+
+                    <td class="{% if transaction.type == 'income' %}positive{% else %}negative{% endif %}">
+                        {% if transaction.type == "income" %}
+                            +{{ "%.2f"|format(transaction.amount) }}
+                        {% else %}
+                            -{{ "%.2f"|format(transaction.amount) }}
+                        {% endif %}
+                    </td>
+
+                    <td>
+                        {% if transaction.receipt %}
+                        <button class="download-btn">Download</button>
+                        {% else %}
+                        <span class="empty-message">No receipt</span>
+                        {% endif %}
+                    </td>
+
+                    <td class="transaction-actions">
+
+                        <button type="button"
+                                class="edit-transaction-btn open-edit-transaction-modal"
+                                data-id="{{ transaction.id }}"
+                                data-title="{{ transaction.title }}"
+                                data-amount="{{ transaction.amount }}"
+                                data-type="{{ transaction.type }}"
+                                data-category="{{ transaction.category }}"
+                                data-card="{{ transaction.card or '' }}"
+                                data-description="{{ transaction.description or '' }}">
+                            <i class="bi bi-pencil-fill"></i>
+                        </button>
+
+                        <form method="POST"
+                              action="{{ url_for('transactions.delete', transaction_id=transaction.id) }}">
+
+                            <button type="submit" class="delete-transaction-btn">
+                                <i class="bi bi-trash-fill"></i>
+                            </button>
+
+                        </form>
+
+                    </td>
+
                 </tr>
 
-                <tr>
-                    <td><span class="circle up"><i class="bi bi-arrow-up"></i></span> Mobile Service</td>
-                    <td>#12548796</td>
-                    <td>Service</td>
-                    <td>1234 ****</td>
-                    <td>20 Jan, 10.40 PM</td>
-                    <td class="negative">-$150</td>
-                    <td><button class="download-btn">Download</button></td>
-                </tr>
+                {% else %}
 
                 <tr>
-                    <td><span class="circle up"><i class="bi bi-arrow-up"></i></span> Wilson</td>
-                    <td>#12548796</td>
-                    <td>Transfer</td>
-                    <td>1234 ****</td>
-                    <td>15 Jan, 03.29 PM</td>
-                    <td class="negative">-$1050</td>
-                    <td><button class="download-btn">Download</button></td>
+                    <td colspan="8" style="text-align:center; color:#888; padding:25px;">
+                        Aucune transaction pour le moment.
+                    </td>
                 </tr>
 
-                <tr>
-                    <td><span class="circle down"><i class="bi bi-arrow-down"></i></span> Emilly</td>
-                    <td>#12548796</td>
-                    <td>Transfer</td>
-                    <td>1234 ****</td>
-                    <td>14 Jan, 10.40 PM</td>
-                    <td class="positive">+$840</td>
-                    <td><button class="download-btn">Download</button></td>
-                </tr>
+                {% endfor %}
+
             </tbody>
+
         </table>
 
     </div>
 
+    <!-- PAGINATION -->
     <div class="pagination">
-        <span>‹ Previous</span>
-        <span class="page active">1</span>
-        <span class="page">2</span>
-        <span class="page">3</span>
-        <span class="page">4</span>
-        <span>Next ›</span>
+
+        {% if transactions.has_prev %}
+        <a href="{{ url_for('transactions.index',
+            page=transactions.prev_num,
+            type=filter_type,
+            start_date=start_date,
+            end_date=end_date) }}">
+            ‹ Previous
+        </a>
+        {% endif %}
+
+        {% for page_num in transactions.iter_pages() %}
+
+            {% if page_num %}
+            <a href="{{ url_for('transactions.index',
+                page=page_num,
+                type=filter_type,
+                start_date=start_date,
+                end_date=end_date) }}"
+               class="{% if page_num == transactions.page %}active{% endif %}">
+                {{ page_num }}
+            </a>
+            {% else %}
+            <span>...</span>
+            {% endif %}
+
+        {% endfor %}
+
+        {% if transactions.has_next %}
+        <a href="{{ url_for('transactions.index',
+            page=transactions.next_num,
+            type=filter_type,
+            start_date=start_date,
+            end_date=end_date) }}">
+            Next ›
+        </a>
+        {% endif %}
+
     </div>
 
 </div>
+
+<!-- ADD TRANSACTION MODAL -->
+<div class="modal-overlay" id="transactionModal">
+
+    <div class="transaction-modal">
+
+        <div class="modal-header">
+            <h3>Add Transaction</h3>
+
+            <button type="button" class="close-transaction-modal">
+                <i class="bi bi-x-lg"></i>
+            </button>
+        </div>
+
+        <form method="POST"
+              action="{{ url_for('transactions.add') }}"
+              class="transaction-form">
+
+            <label>Title</label>
+            <input type="text" name="title" placeholder="Ex: Spotify Subscription" required>
+
+            <label>Amount</label>
+            <input type="number" name="amount" step="0.01" min="0.01" required>
+
+            <label>Type</label>
+            <select name="type" required>
+                <option value="expense">Expense</option>
+                <option value="income">Income</option>
+            </select>
+
+            <label>Category</label>
+            <input type="text" name="category" placeholder="Ex: Shopping" required>
+
+            <label>Card</label>
+            <input type="text" name="card" placeholder="Ex: 4589***">
+
+            <label>Description</label>
+            <textarea name="description" rows="3" placeholder="Optional"></textarea>
+
+            <button type="submit" class="modal-submit">
+                Add Transaction
+            </button>
+
+        </form>
+
+    </div>
+
+</div>
+
+<!-- EDIT TRANSACTION MODAL -->
+<div class="modal-overlay" id="editTransactionModal">
+
+    <div class="transaction-modal">
+
+        <div class="modal-header">
+            <h3>Edit Transaction</h3>
+
+            <button type="button" class="close-edit-transaction-modal">
+                <i class="bi bi-x-lg"></i>
+            </button>
+        </div>
+
+        <form method="POST"
+              id="editTransactionForm"
+              class="transaction-form">
+
+            <label>Title</label>
+            <input type="text" name="title" id="edit_transaction_title" required>
+
+            <label>Amount</label>
+            <input type="number" name="amount" id="edit_transaction_amount" step="0.01" min="0.01" required>
+
+            <label>Type</label>
+            <select name="type" id="edit_transaction_type" required>
+                <option value="expense">Expense</option>
+                <option value="income">Income</option>
+            </select>
+
+            <label>Category</label>
+            <input type="text" name="category" id="edit_transaction_category" required>
+
+            <label>Card</label>
+            <input type="text" name="card" id="edit_transaction_card">
+
+            <label>Description</label>
+            <textarea name="description" id="edit_transaction_description" rows="3"></textarea>
+
+            <button type="submit" class="modal-submit">
+                Save Changes
+            </button>
+
+        </form>
+
+    </div>
+
+</div>
+
+<!-- ADD CARD MODAL -->
+<div class="modal-overlay" id="cardModal">
+
+    <div class="transaction-modal">
+
+        <div class="modal-header">
+            <h3>Add Card</h3>
+
+            <button type="button" class="close-card-modal">
+                <i class="bi bi-x-lg"></i>
+            </button>
+        </div>
+
+        <form method="POST"
+              action="{{ url_for('transactions.add_card') }}"
+              class="transaction-form">
+
+            <label>Card Type</label>
+            <select name="card_type" required>
+                <option value="Visa">Visa</option>
+                <option value="Mastercard">Mastercard</option>
+                <option value="Cash">Cash</option>
+                <option value="PayPal">PayPal</option>
+            </select>
+
+            <label>RIB / Card</label>
+            <input type="text" name="rib" placeholder="Ex: 4589***" required>
+
+            <label>Initial Balance</label>
+            <input type="number" name="initial_balance" step="0.01" value="0" required>
+
+            <button type="submit" class="modal-submit">
+                Add Card
+            </button>
+
+        </form>
+
+    </div>
+
+</div>
+
+<script src="{{ url_for('static', filename='js/transactions.js') }}"></script>
 
 {% endblock %}
