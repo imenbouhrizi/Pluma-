@@ -35,9 +35,9 @@
 
 .budget-main{
     display:grid;
-    grid-template-columns:1.05fr .95fr;
-    gap:45px;
-    align-items:start;
+    grid-template-columns:1fr 1fr;
+    gap:55px;
+    align-items:stretch;
 }
 
 /* Header */
@@ -84,10 +84,12 @@
 .overview-card{
     background:white;
     border-radius:18px;
-    height:310px;
-    padding:25px;
+    height:390px;
+    padding:25px 30px;
     position:relative;
     box-shadow:0 8px 25px rgba(0,0,0,.03);
+    display:flex;
+    flex-direction:column;
 }
 
 .budget-total span{
@@ -101,10 +103,10 @@
 }
 
 .donut{
-    width:185px;
-    height:185px;
+    width:200px;
+    height:200px;
     border-radius:50%;
-    margin:10px auto 0;
+    margin:15px auto 0;
     background:conic-gradient(var(--donut-gradient, #e8eaf1 0 100%));
     display:flex;
     align-items:center;
@@ -114,8 +116,8 @@
 
 .donut::before{
     content:"";
-    width:105px;
-    height:105px;
+    width:115px;
+    height:115px;
     background:white;
     border-radius:50%;
     position:absolute;
@@ -130,33 +132,40 @@
 .donut-center h3{
     margin:0;
     color:#333;
+    font-size:23px;
 }
 
 .donut-center span{
     color:#aaa;
-    font-size:13px;
+    font-size:14px;
 }
 
 .left-spend{
     text-align:center;
-    margin-top:15px;
+    margin-top:18px;
 }
 
 .left-spend strong{
-    font-size:13px;
+    font-size:14px;
 }
 
 .left-spend span{
     background:#f0e6ff;
     color:#8a5cff;
-    padding:7px 12px;
+    padding:8px 14px;
     border-radius:12px;
     margin-left:8px;
-    font-size:12px;
+    font-size:13px;
     font-weight:700;
 }
 
 /* Categories */
+
+.budget-categories{
+    min-height:360px;
+    display:flex;
+    flex-direction:column;
+}
 
 .period-tabs{
     display:flex;
@@ -165,21 +174,24 @@
     margin-bottom:25px;
 }
 
+.period-tabs a,
 .period-tabs button{
     border:1px solid #e3e7f0;
     background:white;
     padding:10px 20px;
     color:#777;
     cursor:pointer;
+    text-decoration:none;
 }
 
+.period-tabs a.active,
 .period-tabs .active{
     background:#c7f6ea;
     color:#00a98f;
 }
 
 .bar-item{
-    margin:15px 0;
+    margin:12px 0;
 }
 
 .bar-label{
@@ -191,7 +203,7 @@
 }
 
 .progress{
-    height:34px;
+    height:30px;
     background:#eef1f7;
     border:1px solid #e2e5ed;
     overflow:hidden;
@@ -208,17 +220,17 @@
     display:flex;
     justify-content:flex-end;
     gap:12px;
-    margin-top:28px;
+    padding-top:20px;
     flex-wrap:wrap;
 }
 
 .create-btn{
     background:white;
     border:1px solid #ddd;
-    padding:10px 16px;
-    border-radius:8px;
+    padding:13px 18px;
+    border-radius:10px;
     font-weight:700;
-    font-size:12px;
+    font-size:13px;
     text-decoration:none;
     color:#222;
     display:inline-flex;
@@ -231,8 +243,8 @@
     background:#24006d;
     color:white;
     border:none;
-    padding:11px 18px;
-    border-radius:8px;
+    padding:14px 22px;
+    border-radius:10px;
     font-weight:700;
     cursor:pointer;
 }
@@ -240,7 +252,7 @@
 /* Budget category cards */
 
 .budget-category-header{
-    margin-top:25px;
+    margin-top:20px;
 }
 
 .budget-category-header h3{
@@ -1011,66 +1023,3 @@
     color:#ff3b3b !important;
 }
 
-/* =========================
-   EXPENSE ACTIONS
-========================= */
-
-.expense-actions{
-    display:flex;
-    align-items:center;
-    gap:10px;
-}
-
-.expense-actions form{
-    margin:0;
-}
-
-.expense-edit-btn,
-.expense-delete-btn{
-    width:38px;
-    height:38px;
-    border:none;
-    border-radius:10px;
-    cursor:pointer;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    transition:.2s;
-}
-
-.expense-edit-btn{
-    background:#f2edff;
-    color:#7c4dff;
-}
-
-.expense-edit-btn:hover{
-    background:#e7dcff;
-}
-
-.expense-delete-btn{
-    background:#fff0f0;
-    color:#e63946;
-}
-
-.expense-delete-btn:hover{
-    background:#ffe0e0;
-    color:#d90429;
-}
-
-.expense-edit-btn i,
-.expense-delete-btn i{
-    font-size:15px;
-}
-
-/* =========================
-   EDIT EXPENSE MODAL
-========================= */
-
-#editExpenseModal{
-    display:none;
-}
-
-#editExpenseModal .budget-modal{
-    width:600px;
-    max-width:90%;
-}
