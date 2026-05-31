@@ -1,0 +1,603 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Pluma – Your Money. Your Goals. Your Way.</title>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.3/css/bootstrap.min.css" rel="stylesheet"/>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.11.3/font/bootstrap-icons.min.css" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700;800&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+  <style>
+    :root {
+      --navy: #1a0a6b;
+      --navy-dark: #120855;
+      --indigo: #2d1fa3;
+      --violet: #4f3ee8;
+      --violet-light: #6b5af0;
+      --accent: #7c6ef5;
+      --soft-bg: #f0effc;
+      --soft-bg2: #e8e6fa;
+      --white: #ffffff;
+      --text-dark: #0f0930;
+      --text-muted: #6b6a8a;
+      --card-bg: #f7f6fe;
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'DM Sans', sans-serif; color: var(--text-dark); background: var(--white); overflow-x: hidden; }
+    h1,h2,h3,h4,h5,h6,.brand { font-family: 'Sora', sans-serif; }
+
+    /* ── NAVBAR ── */
+    .navbar { background: var(--navy); padding: 14px 0; position: sticky; top: 0; z-index: 999; }
+    .navbar-brand { font-family: 'Sora', sans-serif; font-weight: 700; font-size: 1.4rem; color: #fff !important; display: flex; align-items: center; gap: 8px; }
+    .brand-icon { width: 32px; height: 32px; background: rgba(255,255,255,0.15); border-radius: 50%; display: flex; align-items: center; justify-content: center; }
+    .nav-link { color: rgba(255,255,255,0.85) !important; font-size: 0.9rem; font-weight: 500; padding: 6px 14px !important; transition: color 0.2s; }
+    .nav-link:hover { color: #fff !important; }
+    .btn-signin { background: transparent; border: 1.5px solid rgba(255,255,255,0.4); color: #fff !important; border-radius: 50px; padding: 7px 20px !important; font-size: 0.88rem; transition: all 0.2s; }
+    .btn-signin:hover { background: rgba(255,255,255,0.1); }
+    .btn-getstarted { background: #fff; color: var(--navy) !important; border-radius: 50px; padding: 8px 22px !important; font-weight: 700; font-size: 0.88rem; border: none; transition: all 0.2s; }
+    .btn-getstarted:hover { background: var(--soft-bg); transform: translateY(-1px); }
+
+    /* ── HERO ── */
+    .hero { background: var(--white); padding: 80px 0 60px; overflow: hidden; }
+    .hero-title { font-size: clamp(2.6rem, 5vw, 4rem); font-weight: 800; line-height: 1.12; color: var(--navy); }
+    .hero-subtitle { font-size: 1.1rem; color: var(--text-muted); margin: 18px 0 32px; max-width: 380px; line-height: 1.6; }
+    .btn-find-plan { background: var(--navy); color: #fff; border-radius: 50px; padding: 14px 30px; font-weight: 600; font-size: 1rem; border: none; transition: all 0.25s; display: inline-block; }
+    .btn-find-plan:hover { background: var(--indigo); transform: translateY(-2px); box-shadow: 0 8px 24px rgba(26,10,107,0.25); color: #fff; }
+    .hero-dashboard-wrap { position: relative; }
+    .hero-dashboard { background: var(--navy); border-radius: 20px; overflow: hidden; box-shadow: 0 30px 80px rgba(26,10,107,0.25); }
+    .dashboard-header { background: var(--navy); padding: 14px 20px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid rgba(255,255,255,0.08); }
+    .dash-brand { color: #fff; font-family: 'Sora', sans-serif; font-weight: 700; font-size: 1rem; display: flex; align-items: center; gap: 7px; }
+    .dashboard-body { background: #f9f9fc; padding: 20px; }
+    .dash-sidebar { background: var(--navy); border-radius: 12px; padding: 16px 12px; }
+    .dash-nav-item { color: rgba(255,255,255,0.6); padding: 8px 10px; border-radius: 8px; font-size: 0.8rem; display: flex; align-items: center; gap: 8px; margin-bottom: 4px; cursor: pointer; transition: all 0.2s; }
+    .dash-nav-item.active, .dash-nav-item:hover { background: rgba(255,255,255,0.12); color: #fff; }
+    .stat-card { background: #fff; border-radius: 12px; padding: 14px; box-shadow: 0 2px 12px rgba(0,0,0,0.06); }
+    .stat-icon { width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1rem; margin-bottom: 6px; }
+    .stat-label { font-size: 0.72rem; color: var(--text-muted); }
+    .stat-value { font-size: 1.05rem; font-weight: 700; color: var(--text-dark); font-family: 'Sora',sans-serif; }
+    .mini-chart { height: 60px; background: linear-gradient(180deg, rgba(79,62,232,0.08) 0%, transparent 100%); border-radius: 8px; display: flex; align-items: flex-end; gap: 4px; padding: 6px; }
+    .bar { background: var(--violet); border-radius: 3px 3px 0 0; flex: 1; opacity: 0.5; }
+    .bar.active { opacity: 1; }
+
+    /* ── FEATURES ── */
+    .features-section { background: var(--navy); padding: 70px 0; }
+    .section-title { font-size: clamp(1.5rem, 3vw, 2rem); font-weight: 700; }
+    .feature-card { background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1); border-radius: 16px; padding: 28px 22px; height: 100%; transition: all 0.3s; }
+    .feature-card:hover { background: rgba(255,255,255,0.1); transform: translateY(-4px); }
+    .feature-card h5 { color: #fff; font-size: 1rem; font-weight: 700; margin-bottom: 10px; font-family: 'Sora',sans-serif; }
+    .feature-card p { color: rgba(255,255,255,0.65); font-size: 0.85rem; line-height: 1.6; }
+    .feature-preview { background: rgba(255,255,255,0.08); border-radius: 10px; padding: 12px; margin-bottom: 16px; min-height: 90px; display: flex; align-items: center; justify-content: center; }
+
+    /* ── ABOUT ── */
+    .about-section { background: var(--soft-bg); padding: 80px 0; }
+    .about-badge { font-size: 0.75rem; font-weight: 700; color: var(--violet); letter-spacing: 2px; text-transform: uppercase; margin-bottom: 12px; }
+    .about-title { font-size: clamp(1.8rem, 3.5vw, 2.6rem); font-weight: 800; color: var(--navy); line-height: 1.2; }
+    .about-desc { color: var(--indigo); font-weight: 500; font-size: 0.95rem; line-height: 1.7; margin-top: 16px; max-width: 420px; }
+    .about-illustration { background: linear-gradient(135deg, #ddd8f9, #b8b0f5); border-radius: 20px; height: 280px; display: flex; align-items: center; justify-content: center; font-size: 4rem; }
+    .service-card { background: #fff; border-radius: 16px; padding: 30px 24px; box-shadow: 0 4px 20px rgba(79,62,232,0.07); transition: all 0.3s; border: 1px solid rgba(79,62,232,0.08); }
+    .service-card:hover { transform: translateY(-4px); box-shadow: 0 12px 40px rgba(79,62,232,0.14); }
+    .service-icon { width: 52px; height: 52px; background: var(--soft-bg); border-radius: 14px; display: flex; align-items: center; justify-content: center; font-size: 1.4rem; color: var(--violet); margin-bottom: 16px; }
+    .service-card h5 { font-size: 1rem; font-weight: 700; color: var(--navy); margin-bottom: 8px; }
+    .service-card p { font-size: 0.85rem; color: var(--text-muted); line-height: 1.6; }
+
+    /* ── PRICING ── */
+    .pricing-section { background: #fff; padding: 80px 0; }
+    .pricing-subtitle { font-size: 0.85rem; color: var(--text-muted); margin-top: 6px; }
+    .plan-card { border-radius: 20px; padding: 36px 28px; border: 1.5px solid #e4e0fa; transition: all 0.3s; height: 100%; display: flex; flex-direction: column; }
+    .plan-card:hover { transform: translateY(-6px); }
+    .plan-card.featured { background: var(--navy); border-color: var(--navy); transform: scale(1.04); }
+    .plan-card.featured:hover { transform: scale(1.04) translateY(-4px); }
+    .plan-label { font-size: 0.72rem; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: var(--violet); margin-bottom: 16px; }
+    .plan-card.featured .plan-label { color: rgba(255,255,255,0.6); }
+    .plan-price { font-family: 'Sora', sans-serif; font-size: 3rem; font-weight: 800; color: var(--navy); line-height: 1; }
+    .plan-card.featured .plan-price { color: #fff; }
+    .plan-period { font-size: 0.85rem; color: var(--text-muted); margin-left: 4px; }
+    .plan-card.featured .plan-period { color: rgba(255,255,255,0.5); }
+    .plan-feature { font-size: 0.88rem; color: var(--text-dark); padding: 8px 0; border-bottom: 1px solid #f0eefb; display: flex; align-items: center; gap: 8px; }
+    .plan-feature i { color: var(--violet); font-size: 0.9rem; }
+    .plan-card.featured .plan-feature { color: rgba(255,255,255,0.85); border-bottom-color: rgba(255,255,255,0.1); }
+    .plan-card.featured .plan-feature i { color: rgba(255,255,255,0.6); }
+    .btn-plan { border-radius: 50px; padding: 12px 0; font-weight: 600; font-size: 0.9rem; border: 1.5px solid var(--navy); color: var(--navy); background: transparent; transition: all 0.2s; width: 100%; margin-top: auto; padding-top: 12px; }
+    .btn-plan:hover { background: var(--navy); color: #fff; }
+    .plan-card.featured .btn-plan { background: #fff; color: var(--navy); border-color: #fff; }
+    .plan-card.featured .btn-plan:hover { background: var(--soft-bg); }
+
+    /* ── CONTACT ── */
+    .contact-section { background: var(--navy); padding: 70px 0; }
+    .contact-title { font-size: clamp(1.6rem, 3vw, 2.2rem); font-weight: 700; color: #fff; }
+    .contact-desc { color: rgba(255,255,255,0.6); font-size: 0.9rem; line-height: 1.6; max-width: 320px; margin-top: 8px; }
+    .subscribe-wrap { display: flex; gap: 0; max-width: 420px; }
+    .subscribe-input { flex: 1; background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); border-radius: 50px 0 0 50px; padding: 12px 20px; color: #fff; font-size: 0.9rem; outline: none; }
+    .subscribe-input::placeholder { color: rgba(255,255,255,0.4); }
+    .subscribe-btn { background: var(--violet); color: #fff; border: none; border-radius: 0 50px 50px 0; padding: 12px 24px; font-weight: 600; font-size: 0.88rem; cursor: pointer; transition: background 0.2s; }
+    .subscribe-btn:hover { background: var(--violet-light); }
+
+    /* ── FOOTER ── */
+    footer { background: #f4f3fc; padding: 60px 0 30px; }
+    .footer-brand { font-family: 'Sora', sans-serif; font-weight: 700; font-size: 1.4rem; color: var(--navy); display: flex; align-items: center; gap: 8px; }
+    .footer-icon { width: 32px; height: 32px; background: var(--violet); border-radius: 50%; display: flex; align-items: center; justify-content: center; }
+    .footer-col-title { font-size: 0.8rem; font-weight: 700; color: var(--text-muted); letter-spacing: 1px; text-transform: uppercase; margin-bottom: 16px; }
+    .footer-link { display: block; font-size: 0.85rem; color: var(--text-dark); margin-bottom: 9px; text-decoration: none; transition: color 0.2s; }
+    .footer-link:hover { color: var(--violet); }
+    .social-btn { width: 34px; height: 34px; background: #fff; border-radius: 8px; display: inline-flex; align-items: center; justify-content: center; color: var(--navy); font-size: 0.9rem; margin-right: 6px; border: 1px solid #e4e0fa; text-decoration: none; transition: all 0.2s; }
+    .social-btn:hover { background: var(--violet); color: #fff; border-color: var(--violet); }
+    .footer-divider { border-color: #e4e0fa; margin: 30px 0 20px; }
+    .footer-bottom { font-size: 0.8rem; color: var(--text-muted); }
+    .footer-bottom-link { color: var(--text-muted); text-decoration: none; margin-left: 20px; font-size: 0.8rem; }
+    .footer-bottom-link:hover { color: var(--violet); }
+
+    /* ── ANIMATIONS ── */
+    @keyframes fadeUp { from { opacity:0; transform:translateY(30px); } to { opacity:1; transform:translateY(0); } }
+    .fade-up { animation: fadeUp 0.7s ease forwards; }
+    .delay-1 { animation-delay: 0.1s; }
+    .delay-2 { animation-delay: 0.2s; }
+    .delay-3 { animation-delay: 0.35s; }
+  </style>
+</head>
+<body>
+
+<!-- ══════════════ NAVBAR ══════════════ -->
+<nav class="navbar navbar-expand-lg">
+  <div class="container">
+    <a class="navbar-brand" href="#">
+      <div class="brand-icon"><i class="bi bi-feather text-white" style="font-size:1rem;"></i></div>
+      pluma
+    </a>
+    <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navMenu">
+      <i class="bi bi-list text-white fs-4"></i>
+    </button>
+    <div class="collapse navbar-collapse" id="navMenu">
+      <ul class="navbar-nav mx-auto gap-1">
+        <li class="nav-item"><a class="nav-link" href="#">Services <i class="bi bi-chevron-down" style="font-size:0.7rem;"></i></a></li>
+        <li class="nav-item"><a class="nav-link" href="#">About Us <i class="bi bi-chevron-down" style="font-size:0.7rem;"></i></a></li>
+        <li class="nav-item"><a class="nav-link" href="#pricing">Pricing <i class="bi bi-chevron-down" style="font-size:0.7rem;"></i></a></li>
+      </ul>
+      <div class="d-flex gap-2 mt-3 mt-lg-0">
+        <a href="{{ url_for('auth.login') }}" class="nav-link btn-signin">Sign in</a>
+
+<a href="{{ url_for('auth.signup') }}" class="nav-link btn-getstarted">Get started</a>
+
+      </div>
+    </div>
+  </div>
+</nav>
+
+<!-- ══════════════ HERO ══════════════ -->
+<section class="hero">
+  <div class="container">
+    <div class="row align-items-center g-5">
+      <div class="col-lg-5">
+        <h1 class="hero-title fade-up">
+          Your money.<br>
+          Your goals.<br>
+          Your way.
+        </h1>
+        <p class="hero-subtitle fade-up delay-1">Simplify your finances and take action with confidence.</p>
+        <a href="#pricing" class="btn-find-plan fade-up delay-2 text-decoration-none">Find your plan</a>
+      </div>
+      <div class="col-lg-7 fade-up delay-3">
+        <div class="hero-dashboard-wrap">
+          <div class="hero-dashboard">
+            <!-- Dashboard Header -->
+            <div class="dashboard-header">
+              <div class="dash-brand">
+                <div class="brand-icon" style="width:24px;height:24px;"><i class="bi bi-feather" style="font-size:0.75rem;color:#fff;"></i></div>
+                pluma
+              </div>
+              <div class="d-flex gap-3 align-items-center">
+                <i class="bi bi-search text-white opacity-50"></i>
+                <div style="width:28px;height:28px;background:rgba(255,255,255,0.15);border-radius:50%;display:flex;align-items:center;justify-content:center;">
+                  <i class="bi bi-bell text-white" style="font-size:0.8rem;"></i>
+                </div>
+                <div style="width:32px;height:32px;background:linear-gradient(135deg,#a78bfa,#6366f1);border-radius:50%;"></div>
+              </div>
+            </div>
+            <!-- Dashboard Body -->
+            <div class="dashboard-body">
+              <div class="row g-3">
+                <div class="col-2 d-none d-md-block">
+                  <div class="dash-sidebar">
+                    <div class="dash-nav-item active"><i class="bi bi-house-fill"></i> <span style="font-size:0.72rem;">Dashboard</span></div>
+                    <div class="dash-nav-item"><i class="bi bi-arrow-left-right"></i> <span style="font-size:0.72rem;">Transactions</span></div>
+                    <div class="dash-nav-item"><i class="bi bi-wallet2"></i> <span style="font-size:0.72rem;">Budgets</span></div>
+                    <div class="dash-nav-item"><i class="bi bi-tag"></i> <span style="font-size:0.72rem;">Categories</span></div>
+                    <div class="dash-nav-item"><i class="bi bi-gear"></i> <span style="font-size:0.72rem;">Settings</span></div>
+                  </div>
+                </div>
+                <div class="col-12 col-md-10">
+                  <div class="mb-3">
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                      <div>
+                        <h6 style="font-family:'Sora',sans-serif;font-weight:700;font-size:0.95rem;margin:0;">Overview</h6>
+                        <div style="font-size:0.72rem;color:var(--text-muted);">Welcome Jhon! Here's your financial summary</div>
+                      </div>
+                      <div style="font-size:0.72rem;color:var(--text-muted);background:#f0eefb;padding:4px 10px;border-radius:20px;">May 01 – May 15</div>
+                    </div>
+                    <!-- Stat Cards -->
+                    <div class="row g-2">
+                      <div class="col-6 col-sm-3">
+                        <div class="stat-card">
+                          <div class="stat-icon" style="background:#fef3c7;"><i class="bi bi-wallet2" style="color:#f59e0b;font-size:0.9rem;"></i></div>
+                          <div class="stat-label">My Balance</div>
+                          <div class="stat-value">$12,750</div>
+                        </div>
+                      </div>
+                      <div class="col-6 col-sm-3">
+                        <div class="stat-card">
+                          <div class="stat-icon" style="background:#ede9fe;"><i class="bi bi-person" style="color:#7c3aed;font-size:0.9rem;"></i></div>
+                          <div class="stat-label">Income</div>
+                          <div class="stat-value">$5,600</div>
+                        </div>
+                      </div>
+                      <div class="col-6 col-sm-3">
+                        <div class="stat-card">
+                          <div class="stat-icon" style="background:#fce7f3;"><i class="bi bi-credit-card" style="color:#ec4899;font-size:0.9rem;"></i></div>
+                          <div class="stat-label">Expense</div>
+                          <div class="stat-value">$3,460</div>
+                        </div>
+                      </div>
+                      <div class="col-6 col-sm-3">
+                        <div class="stat-card">
+                          <div class="stat-icon" style="background:#d1fae5;"><i class="bi bi-piggy-bank" style="color:#10b981;font-size:0.9rem;"></i></div>
+                          <div class="stat-label">Total Saving</div>
+                          <div class="stat-value">$7,920</div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <!-- Charts Row -->
+                  <div class="row g-2">
+                    <div class="col-12 col-sm-5">
+                      <div class="stat-card" style="padding:12px;">
+                        <div style="font-size:0.75rem;font-weight:600;margin-bottom:8px;color:var(--text-dark);">Expense Statistics</div>
+                        <!-- Donut placeholder -->
+                        <div style="height:80px;display:flex;align-items:center;justify-content:center;">
+                          <svg viewBox="0 0 100 100" width="80" height="80">
+                            <circle cx="50" cy="50" r="35" fill="none" stroke="#4f3ee8" stroke-width="14" stroke-dasharray="65 35" transform="rotate(-90 50 50)"/>
+                            <circle cx="50" cy="50" r="35" fill="none" stroke="#f59e0b" stroke-width="14" stroke-dasharray="20 80" stroke-dashoffset="-65" transform="rotate(-90 50 50)"/>
+                            <circle cx="50" cy="50" r="35" fill="none" stroke="#ec4899" stroke-width="14" stroke-dasharray="10 90" stroke-dashoffset="-85" transform="rotate(-90 50 50)"/>
+                            <circle cx="50" cy="50" r="20" fill="white"/>
+                          </svg>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="col-12 col-sm-7">
+                      <div class="stat-card" style="padding:12px;height:100%;">
+                        <div style="font-size:0.75rem;font-weight:600;margin-bottom:6px;color:var(--text-dark);">Financial Overview</div>
+                        <!-- Line chart placeholder -->
+                        <svg viewBox="0 0 200 70" width="100%" style="overflow:visible;">
+                          <defs>
+                            <linearGradient id="g1" x1="0" x2="0" y1="0" y2="1">
+                              <stop offset="0%" stop-color="#4f3ee8" stop-opacity="0.2"/>
+                              <stop offset="100%" stop-color="#4f3ee8" stop-opacity="0"/>
+                            </linearGradient>
+                          </defs>
+                          <path d="M0 55 C20 50 40 30 60 35 C80 40 100 20 120 25 C140 30 160 15 180 10 L200 8" fill="none" stroke="#4f3ee8" stroke-width="2"/>
+                          <path d="M0 60 C20 58 40 50 60 55 C80 60 100 45 120 50 C140 55 160 40 180 42 L200 40" fill="none" stroke="#ec4899" stroke-width="2"/>
+                        </svg>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- Floating card -->
+          <div style="position:absolute;bottom:-20px;left:-20px;background:#fff;border-radius:14px;padding:12px 16px;box-shadow:0 8px 30px rgba(79,62,232,0.15);min-width:160px;display:none;" class="d-lg-block">
+            <div style="font-size:0.7rem;color:var(--text-muted);margin-bottom:4px;">My Expense</div>
+            <div style="font-size:1.1rem;font-weight:700;color:var(--navy);font-family:'Sora',sans-serif;margin-bottom:8px;">$12,500</div>
+            <div class="mini-chart">
+              <div class="bar" style="height:30%;"></div>
+              <div class="bar" style="height:50%;"></div>
+              <div class="bar" style="height:40%;"></div>
+              <div class="bar active" style="height:80%;"></div>
+              <div class="bar" style="height:60%;"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════ FEATURES ══════════════ -->
+<section class="features-section">
+  <div class="container">
+    <div class="text-center mb-5">
+      <h2 class="section-title text-white">Smart Budget management <span style="color:var(--accent);">customized</span> to you</h2>
+    </div>
+    <div class="row g-4">
+      <!-- Feature 1 -->
+      <div class="col-sm-6 col-lg-3">
+        <div class="feature-card">
+          <div class="feature-preview">
+            <!-- Mini budget UI -->
+            <div style="width:100%;">
+              <div style="display:flex;justify-content:space-between;margin-bottom:8px;">
+                <div style="font-size:0.72rem;color:rgba(255,255,255,0.7);">Food</div>
+                <div style="font-size:0.72rem;color:rgba(255,255,255,0.7);">68%</div>
+              </div>
+              <div style="background:rgba(255,255,255,0.1);border-radius:4px;height:6px;">
+                <div style="background:var(--accent);width:68%;height:100%;border-radius:4px;"></div>
+              </div>
+              <div style="display:flex;justify-content:space-between;margin:8px 0;">
+                <div style="font-size:0.72rem;color:rgba(255,255,255,0.7);">Transport</div>
+                <div style="font-size:0.72rem;color:rgba(255,255,255,0.7);">42%</div>
+              </div>
+              <div style="background:rgba(255,255,255,0.1);border-radius:4px;height:6px;">
+                <div style="background:#a78bfa;width:42%;height:100%;border-radius:4px;"></div>
+              </div>
+            </div>
+          </div>
+          <h5>Stay on top of your budget</h5>
+          <p>Tracking your spending across every category helps you make smarter decisions each month.</p>
+        </div>
+      </div>
+      <!-- Feature 2 -->
+      <div class="col-sm-6 col-lg-3">
+        <div class="feature-card">
+          <div class="feature-preview">
+            <div style="width:100%;">
+              <div style="background:rgba(255,255,255,0.1);border-radius:10px;padding:10px 12px;margin-bottom:8px;">
+                <div style="font-size:0.7rem;color:rgba(255,255,255,0.5);margin-bottom:2px;">Your bill was paid!</div>
+                <div style="font-size:0.78rem;color:#fff;font-weight:600;">Netflix — $14.99</div>
+              </div>
+              <div style="background:rgba(239,68,68,0.15);border:1px solid rgba(239,68,68,0.3);border-radius:10px;padding:10px 12px;">
+                <div style="font-size:0.7rem;color:rgba(255,255,255,0.5);margin-bottom:2px;">Large transaction detected</div>
+                <div style="font-size:0.78rem;color:#fca5a5;font-weight:600;">$1,500 to Bloomfield</div>
+              </div>
+            </div>
+          </div>
+          <h5>Real-time Alerts</h5>
+          <p>Get real-time alerts, insightful reports, projected cash flows & more, for more informed decision-making.</p>
+        </div>
+      </div>
+      <!-- Feature 3 -->
+      <div class="col-sm-6 col-lg-3">
+        <div class="feature-card">
+          <div class="feature-preview">
+            <div style="width:100%;">
+              <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
+                <div style="font-size:0.72rem;color:rgba(255,255,255,0.7);">🏠 New Home</div>
+                <div style="font-size:0.72rem;color:var(--accent);">$22,000</div>
+              </div>
+              <div style="background:rgba(255,255,255,0.1);border-radius:4px;height:5px;margin-bottom:10px;">
+                <div style="background:linear-gradient(90deg,var(--accent),#a78bfa);width:55%;height:100%;border-radius:4px;"></div>
+              </div>
+              <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
+                <div style="font-size:0.72rem;color:rgba(255,255,255,0.7);">✈️ Vacation</div>
+                <div style="font-size:0.72rem;color:var(--accent);">$3,000</div>
+              </div>
+              <div style="background:rgba(255,255,255,0.1);border-radius:4px;height:5px;">
+                <div style="background:linear-gradient(90deg,#f59e0b,#fbbf24);width:78%;height:100%;border-radius:4px;"></div>
+              </div>
+            </div>
+          </div>
+          <h5>Optimize your savings goals</h5>
+          <p>Whatever your goals — a house, college or a vacation — we help you track your progress & get there sooner.</p>
+        </div>
+      </div>
+      <!-- Feature 4 -->
+      <div class="col-sm-6 col-lg-3">
+        <div class="feature-card">
+          <div class="feature-preview">
+            <div style="width:100%;">
+              <div style="display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid rgba(255,255,255,0.1);">
+                <div style="font-size:0.7rem;color:rgba(255,255,255,0.7);">Spotify</div>
+                <div style="font-size:0.7rem;color:#86efac;">+$9.99</div>
+              </div>
+              <div style="display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid rgba(255,255,255,0.1);">
+                <div style="font-size:0.7rem;color:rgba(255,255,255,0.7);">Uber</div>
+                <div style="font-size:0.7rem;color:#fca5a5;">–$17.00</div>
+              </div>
+              <div style="display:flex;justify-content:space-between;padding:6px 0;">
+                <div style="font-size:0.7rem;color:rgba(255,255,255,0.7);">Salary</div>
+                <div style="font-size:0.7rem;color:#86efac;">+$4,200</div>
+              </div>
+            </div>
+          </div>
+          <h5>Transaction History</h5>
+          <p>Track every payment and income in real time, categorized, listed and always at your fingertips.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════ ABOUT ══════════════ -->
+<section class="about-section">
+  <div class="container">
+    <div class="row align-items-center g-5 mb-5">
+      <div class="col-lg-6">
+        <div class="about-badge">About Us</div>
+        <h2 class="about-title">Smart Budget,<br>Better Life</h2>
+        <p class="about-desc">We help individuals and groups take control of their finances with simple, collaborative and intelligent budgeting tools.</p>
+      </div>
+      <div class="col-lg-6">
+        <div class="about-illustration">
+          <div style="text-align:center;">
+            <div style="font-size:3rem;margin-bottom:8px;">💰</div>
+            <div style="display:flex;gap:16px;font-size:2rem;justify-content:center;">🏠 🚗 🎓 ✈️</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- Service Cards -->
+    <div class="row g-4">
+      <div class="col-sm-6 col-lg-3">
+        <div class="service-card">
+          <div class="service-icon"><i class="bi bi-wallet2"></i></div>
+          <h5>Budget Tracking</h5>
+          <p>Easily monitor your income and expenses across categories like food, transport, and housing.</p>
+        </div>
+      </div>
+      <div class="col-sm-6 col-lg-3">
+        <div class="service-card">
+          <div class="service-icon"><i class="bi bi-people"></i></div>
+          <h5>Collaborative Finance</h5>
+          <p>Share budgets with family, roommates or friends and manage shared expenses together.</p>
+        </div>
+      </div>
+      <div class="col-sm-6 col-lg-3">
+        <div class="service-card">
+          <div class="service-icon"><i class="bi bi-graph-up-arrow"></i></div>
+          <h5>Smart Analytics</h5>
+          <p>Visualize your spending patterns and financial trends with powerful, easy-to-read charts.</p>
+        </div>
+      </div>
+      <div class="col-sm-6 col-lg-3">
+        <div class="service-card">
+          <div class="service-icon"><i class="bi bi-shield-check"></i></div>
+          <h5>Secure & Private</h5>
+          <p>Your financial data is encrypted and never shared. You stay in full control of your information.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════ PRICING ══════════════ -->
+<section class="pricing-section" id="pricing">
+  <div class="container">
+    <div class="text-center mb-5">
+      <h2 class="section-title" style="color:var(--navy);">We Have The Best Pricing Package</h2>
+      <p class="pricing-subtitle">Choose the plan that fits your financial journey</p>
+    </div>
+    <div class="row g-4 justify-content-center align-items-stretch">
+      <!-- Starter -->
+      <div class="col-md-4">
+        <div class="plan-card">
+          <div class="plan-label">Starter Plan</div>
+          <div class="d-flex align-items-baseline mb-4">
+            <span class="plan-price">$49</span>
+            <span class="plan-period">/month</span>
+          </div>
+          <div class="plan-feature"><i class="bi bi-check-circle-fill"></i> Get paid 3 days early</div>
+          <div class="plan-feature"><i class="bi bi-check-circle-fill"></i> Fee-Free Overdraft</div>
+          <div class="plan-feature"><i class="bi bi-check-circle-fill"></i> Detailed spend insights</div>
+          <div class="plan-feature mb-4"><i class="bi bi-check-circle-fill"></i> Priority Support</div>
+          <button class="btn btn-plan mt-auto">Get Started</button>
+        </div>
+      </div>
+      <!-- Enterprise (Featured) -->
+      <div class="col-md-4">
+        <div class="plan-card featured">
+          <div class="plan-label">Enterprise Plan</div>
+          <div class="d-flex align-items-baseline mb-4">
+            <span class="plan-price">$99</span>
+            <span class="plan-period">/month</span>
+          </div>
+          <div class="plan-feature"><i class="bi bi-check-circle-fill"></i> No Debit Card Fees</div>
+          <div class="plan-feature"><i class="bi bi-check-circle-fill"></i> No Debit Card Fees</div>
+          <div class="plan-feature"><i class="bi bi-check-circle-fill"></i> No Debit Card Fees</div>
+          <div class="plan-feature"><i class="bi bi-check-circle-fill"></i> No Debit Card Fees</div>
+          <div class="plan-feature"><i class="bi bi-check-circle-fill"></i> No Debit Card Fees</div>
+          <div class="plan-feature mb-4"><i class="bi bi-check-circle-fill"></i> No Debit Card Fees</div>
+          <button class="btn btn-plan mt-auto">Get Started</button>
+        </div>
+      </div>
+      <!-- Pro -->
+      <div class="col-md-4">
+        <div class="plan-card">
+          <div class="plan-label">Pro Plan</div>
+          <div class="d-flex align-items-baseline mb-4">
+            <span class="plan-price">$139</span>
+            <span class="plan-period">/month</span>
+          </div>
+          <div class="plan-feature"><i class="bi bi-check-circle-fill"></i> Get paid 3 days early</div>
+          <div class="plan-feature"><i class="bi bi-check-circle-fill"></i> Fee-Free Overdraft</div>
+          <div class="plan-feature"><i class="bi bi-check-circle-fill"></i> Detailed spend insights</div>
+          <div class="plan-feature mb-4"><i class="bi bi-check-circle-fill"></i> Priority Support</div>
+          <button class="btn btn-plan mt-auto">Get Started</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════ CONTACT / SUBSCRIBE ══════════════ -->
+<section class="contact-section">
+  <div class="container">
+    <div class="row align-items-center g-4">
+      <div class="col-lg-5">
+        <h2 class="contact-title">Get In Touch</h2>
+        <p class="contact-desc">The gradual accumulation of information about atomic and small-scale behaviour during the first quarter of the 20th.</p>
+      </div>
+      <div class="col-lg-7 d-flex justify-content-lg-end">
+        <div class="subscribe-wrap w-100" style="max-width:420px;">
+          <input class="subscribe-input" type="email" placeholder="Your Email"/>
+          <button class="subscribe-btn">Subscribe</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════ FOOTER ══════════════ -->
+<footer>
+  <div class="container">
+    <div class="row g-5">
+      <!-- Brand -->
+      <div class="col-lg-3 col-md-6">
+        <div class="footer-brand mb-3">
+          <div class="footer-icon"><i class="bi bi-feather text-white" style="font-size:0.9rem;"></i></div>
+          pluma
+        </div>
+        <div class="d-flex mt-3">
+          <a href="#" class="social-btn"><i class="bi bi-envelope"></i></a>
+          <a href="#" class="social-btn"><i class="bi bi-facebook"></i></a>
+          <a href="#" class="social-btn"><i class="bi bi-twitter-x"></i></a>
+          <a href="#" class="social-btn"><i class="bi bi-linkedin"></i></a>
+        </div>
+      </div>
+      <!-- About Quicken -->
+      <div class="col-lg-2 col-md-6 col-6">
+        <div class="footer-col-title">About Quicken</div>
+        <a href="#" class="footer-link">About us</a>
+        <a href="#" class="footer-link">Careers</a>
+        <a href="#" class="footer-link">Press</a>
+        <a href="#" class="footer-link">Quicken Checks</a>
+        <a href="#" class="footer-link">Affiliate programs</a>
+        <a href="#" class="footer-link">Quicken Canada</a>
+      </div>
+      <!-- Sign In -->
+      <div class="col-lg-2 col-md-6 col-6">
+        <div class="footer-col-title">Sign In</div>
+        <a href="#" class="footer-link">Quicken Simplifi</a>
+        <a href="#" class="footer-link">Quicken Classic</a>
+        <a href="#" class="footer-link">Quicken Investing</a>
+        <a href="#" class="footer-link">My Account</a>
+      </div>
+      <!-- Products -->
+      <div class="col-lg-5 col-md-6">
+        <div class="footer-col-title">Products</div>
+        <div class="row g-0">
+          <div class="col-6">
+            <a href="#" class="footer-link">Quicken Simplifi</a>
+            <a href="#" class="footer-link">Quicken Classic</a>
+            <a href="#" class="footer-link">Quicken Classic Premier</a>
+            <a href="#" class="footer-link">Quicken Classic Deluxe</a>
+          </div>
+          <div class="col-6">
+            <a href="#" class="footer-link">Quicken Classic Business</a>
+            <a href="#" class="footer-link">Quicken Classic for Mac</a>
+            <a href="#" class="footer-link">Quicken Classic Starter</a>
+            <a href="#" class="footer-link">Quicken Classic Bill Manager</a>
+          </div>
+        </div>
+      </div>
+    </div>
+    <hr class="footer-divider"/>
+    <div class="d-flex flex-wrap justify-content-between align-items-center">
+      <div class="footer-bottom">© 2026 Pluma. All rights reserved.</div>
+      <div>
+        <a href="#" class="footer-bottom-link">Privacy Policy</a>
+        <a href="#" class="footer-bottom-link">Terms of Use</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.3/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
