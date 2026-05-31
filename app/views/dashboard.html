@@ -4,344 +4,240 @@
 
 <div class="dashboard-page-content">
 
+    <div id="dashboard-data"
+         data-month-labels='{{ month_labels|tojson }}'
+         data-monthly-income='{{ monthly_income|tojson }}'
+         data-monthly-expense='{{ monthly_expense|tojson }}'
+         data-pie-labels='{{ pie_data|map(attribute="name")|list|tojson }}'
+         data-pie-values='{{ pie_data|map(attribute="percent")|list|tojson }}'
+         data-pie-colors='{{ pie_data|map(attribute="color")|list|tojson }}'>
+    </div>
+
     <div class="overview-header">
 
         <div>
-
             <h1>Overview</h1>
-
-            <p>Welcome Jhon! Here's your financial summary</p>
-
+            <p>Welcome! Here's your financial summary</p>
         </div>
 
         <div class="overview-actions">
 
             <button class="export-btn">
-
                 <i class="bi bi-upload"></i>
-
                 Export
-
             </button>
 
-            <button class="date-btn">
+            <form method="GET" class="dashboard-month-filter">
+                <select name="month" onchange="this.form.submit()">
 
-                <i class="bi bi-calendar"></i>
+                    <option value="all" {% if selected_month == "all" %}selected{% endif %}>
+                        All months
+                    </option>
 
-                May 01 - May 15
+                    {% set months = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"] %}
 
-            </button>
+                    {% for i in range(1, 13) %}
+                    <option value="{{ i }}" {% if selected_month == i|string %}selected{% endif %}>
+                        {{ months[i - 1] }}
+                    </option>
+                    {% endfor %}
+
+                </select>
+            </form>
 
         </div>
 
     </div>
 
-
-    <!-- KPI cards -->
-
     <div class="cards-container">
 
         <div class="card-item">
-
             <div class="card-icon balance">
                 <i class="bi bi-coin"></i>
             </div>
 
             <div>
-
                 <span>My Balance</span>
-
-                <h3>$12,750</h3>
-
+                <h3>{{ "%.2f"|format(my_balance) }}</h3>
             </div>
-
         </div>
 
-
         <div class="card-item">
-
             <div class="card-icon income">
                 <i class="bi bi-cash-stack"></i>
             </div>
 
             <div>
-
                 <span>Income</span>
-
-                <h3>$5,600</h3>
-
+                <h3>{{ "%.2f"|format(income) }}</h3>
             </div>
-
         </div>
 
-
         <div class="card-item">
-
             <div class="card-icon expense">
                 <i class="bi bi-wallet2"></i>
             </div>
 
             <div>
-
                 <span>Expense</span>
-
-                <h3>$3,460</h3>
-
+                <h3>{{ "%.2f"|format(expense) }}</h3>
             </div>
-
         </div>
 
-
         <div class="card-item">
-
             <div class="card-icon saving">
                 <i class="bi bi-piggy-bank"></i>
             </div>
 
             <div>
-
                 <span>Total Saving</span>
-
-                <h3>$7,920</h3>
-
+                <h3>{{ "%.2f"|format(total_saving) }}</h3>
             </div>
-
         </div>
 
     </div>
 
-
     <div class="charts-section">
 
-    <!-- Expense Statistics -->
     <div class="expense-box">
 
         <h3>Expense Statistics</h3>
 
         <div class="pie-card">
             <canvas id="expensePieChart"></canvas>
+
+            <div class="pie-legend">
+                {% for item in pie_data %}
+                <div class="pie-legend-row">
+                    <span class="legend-dot" data-color="{{ item.color }}"></span>
+                    <span>{{ item.name }}</span>
+                    <strong>{{ item.percent }}%</strong>
+                </div>
+                {% else %}
+                <p class="empty-dashboard-message">No expense data</p>
+                {% endfor %}
+            </div>
         </div>
 
     </div>
 
-    <!-- Financial Overview -->
-    <div class="financial-card">
+    <div class="financial-box">
 
-        <div class="chart-header">
+        <h3>Financial Overview</h3>
 
-            <h3>Financial Overview</h3>
+        <div class="financial-card">
 
-            <div class="chart-actions">
+            <div class="financial-actions">
+
                 <span class="legend income-line"></span>
                 <span>Income</span>
 
                 <span class="legend expense-line"></span>
                 <span>Expenses</span>
 
-                <button class="monthly-btn">
-                    Monthly View
-                    <i class="bi bi-chevron-down"></i>
-                </button>
+                <form method="GET" class="monthly-view-form">
+                    <select name="month" onchange="this.form.submit()">
+
+                        <option value="all" {% if selected_month == "all" %}selected{% endif %}>
+                            Monthly View
+                        </option>
+
+                        {% set months = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"] %}
+
+                        {% for i in range(1, 13) %}
+                        <option value="{{ i }}" {% if selected_month == i|string %}selected{% endif %}>
+                            {{ months[i - 1] }}
+                        </option>
+                        {% endfor %}
+
+                    </select>
+                </form>
+
             </div>
 
-        </div>
+            <canvas id="financialChart"></canvas>
 
-        <canvas id="financialChart"></canvas>
-
-    </div>
-
-</div>
-
-<div class="bottom-section">
-
-<!-- Transactions Dashboard Mini -->
-<div class="transactions-card">
-
-    <div class="transactions-header">
-        <h3>Transactions</h3>
-
-        <button class="month-filter">
-            <i class="bi bi-calendar"></i>
-            May
-            <i class="bi bi-chevron-down"></i>
-        </button>
-    </div>
-
-    <div class="transactions-tabs">
-        <span class="active-tab">All</span>
-        <span>Upcoming</span>
-    </div>
-
-    <div class="transactions-list">
-
-        <div class="transaction-row">
-            <div class="transaction-left">
-                <div class="transaction-icon food-icon">
-                    <i class="bi bi-cup-hot-fill"></i>
-                </div>
-
-                <div>
-                    <h4>Dunkin Donuts</h4>
-                    <p>May 23, 2022 at 8:20 PM</p>
-                </div>
-            </div>
-
-            <span class="category food-category">Food</span>
-            <span class="amount negative">-$19.00</span>
-        </div>
-
-        <div class="transaction-row">
-            <div class="transaction-left">
-                <div class="transaction-icon transport-icon">
-                    <i class="bi bi-car-front-fill"></i>
-                </div>
-
-                <div>
-                    <h4>Uber</h4>
-                    <p>May 23, 2022 at 10:36 AM</p>
-                </div>
-            </div>
-
-            <span class="category transport-category">Transport</span>
-            <span class="amount negative">-$7.00</span>
-        </div>
-
-        <div class="transaction-row">
-            <div class="transaction-left">
-                <div class="transaction-icon service-icon">
-                    <i class="bi bi-cash-stack"></i>
-                </div>
-
-                <div>
-                    <h4>Payment Salary</h4>
-                    <p>May 23, 2022 at 9:48 AM</p>
-                </div>
-            </div>
-
-            <span class="category service-category">Service</span>
-            <span class="amount positive">+$15,000</span>
-        </div>
-
-        <div class="transaction-row">
-            <div class="transaction-left">
-                <div class="transaction-icon transfer-icon">
-                    <i class="bi bi-arrow-left-right"></i>
-                </div>
-
-                <div>
-                    <h4>Elon Musk</h4>
-                    <p>May 22, 2022 at 4:46 PM</p>
-                </div>
-            </div>
-
-            <span class="category transfer-category">Transfer</span>
-            <span class="amount positive">+$3,000</span>
-        </div>
-
-        <div class="transaction-row">
-            <div class="transaction-left">
-                <div class="transaction-icon shop-icon">
-                    <i class="bi bi-bag-fill"></i>
-                </div>
-
-                <div>
-                    <h4>Apple</h4>
-                    <p>May 23, 2022 at 4:44 PM</p>
-                </div>
-            </div>
-
-            <span class="category shop-category">Shop</span>
-            <span class="amount negative">-$499.00</span>
         </div>
 
     </div>
 
 </div>
 
+    <div class="dashboard-transactions-table">
 
-    <!-- Financial Goals -->
-    <div class="financial-goals-card">
-
-        <div class="goals-header">
-            <h3>Financial goals</h3>
-
-            <button>
-                <i class="bi bi-chevron-right"></i>
-            </button>
+        <div class="transactions-header">
+            <h3>All Transactions</h3>
         </div>
 
-        <div class="goal-row">
+        <div class="dashboard-table-scroll">
 
-            <div class="goal-circle circle-yellow">
-                <span>30%</span>
-            </div>
+            <table>
 
-            <div class="goal-main">
-                <h4>Buy Iphone 15</h4>
-                <p>Deadline: May 8, 2024</p>
-            </div>
+                <thead>
+                    <tr>
+                        <th>Description</th>
+                        <th>Transaction ID</th>
+                        <th>Type</th>
+                        <th>Card</th>
+                        <th>Date</th>
+                        <th>Amount</th>
+                    </tr>
+                </thead>
 
-            <div class="goal-money">
-                <span>Saved up</span>
-                <h4>$360</h4>
-            </div>
+                <tbody>
 
-            <div class="goal-money">
-                <span>Goal</span>
-                <h4>$1,200</h4>
-            </div>
+                    {% for transaction in transactions %}
 
-        </div>
+                    <tr>
+                        <td>
+                            {% if transaction.type == "income" %}
+                            <span class="circle down">
+                                <i class="bi bi-arrow-down"></i>
+                            </span>
+                            {% else %}
+                            <span class="circle up">
+                                <i class="bi bi-arrow-up"></i>
+                            </span>
+                            {% endif %}
 
-        <div class="goal-row">
+                            {{ transaction.title }}
+                        </td>
 
-            <div class="goal-circle circle-purple">
-                <span>90%</span>
-            </div>
+                        <td>{{ transaction.transaction_code }}</td>
 
-            <div class="goal-main">
-                <h4>Trip to Spain</h4>
-                <p>Deadline: August 16, 2024</p>
-            </div>
+                        <td>{{ transaction.category }}</td>
 
-            <div class="goal-money">
-                <span>Saved up</span>
-                <h4>$3,260</h4>
-            </div>
+                        <td>{{ transaction.card if transaction.card else "Cash" }}</td>
 
-            <div class="goal-money">
-                <span>Goal</span>
-                <h4>$3,600</h4>
-            </div>
+                        <td>{{ transaction.created_at.strftime('%d %b, %I:%M %p') }}</td>
 
-        </div>
+                        <td class="{% if transaction.type == 'income' %}positive{% else %}negative{% endif %}">
+                            {% if transaction.type == "income" %}
+                                +{{ "%.2f"|format(transaction.amount) }}
+                            {% else %}
+                                -{{ "%.2f"|format(transaction.amount) }}
+                            {% endif %}
+                        </td>
+                    </tr>
 
-        <div class="goal-row">
+                    {% else %}
 
-            <div class="goal-circle circle-orange">
-                <span>77%</span>
-            </div>
+                    <tr>
+                        <td colspan="6" class="empty-dashboard-message">
+                            Aucune transaction pour le moment.
+                        </td>
+                    </tr>
 
-            <div class="goal-main">
-                <h4>For a new house</h4>
-                <p>Deadline: May 12, 2025</p>
-            </div>
+                    {% endfor %}
 
-            <div class="goal-money">
-                <span>Saved up</span>
-                <h4>$120,300</h4>
-            </div>
+                </tbody>
 
-            <div class="goal-money">
-                <span>Goal</span>
-                <h4>$180,000</h4>
-            </div>
+            </table>
 
         </div>
 
     </div>
 
-</div>
 </div>
 
 {% endblock %}
