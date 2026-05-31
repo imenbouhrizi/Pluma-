@@ -21,11 +21,12 @@
         </div>
 
         <div class="overview-actions">
-
-            <button class="export-btn">
-                <i class="bi bi-upload"></i>
-                Export
-            </button>
+            <a href="{{ url_for('dashboard.export_pdf', month=selected_month) }}"
+               class="export-btn"
+               target="_blank">
+               <i class="bi bi-upload"></i>
+               Export
+            </a>
 
             <form method="GET" class="dashboard-month-filter">
                 <select name="month" onchange="this.form.submit()">
