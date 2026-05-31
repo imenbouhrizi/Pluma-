@@ -307,3 +307,10 @@ body{
     color:#20d6b5 !important;
     font-weight:700;
 }
+
+.export-btn{
+    text-decoration:none;
+    display:inline-flex;
+    align-items:center;
+    gap:6px;
+}
